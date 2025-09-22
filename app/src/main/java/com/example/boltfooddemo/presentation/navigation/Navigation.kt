@@ -1,8 +1,10 @@
 package com.example.boltfooddemo.presentation.navigation
 
+import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -16,6 +18,7 @@ import com.example.boltfooddemo.presentation.ui.screens.SplashScreen
 import com.example.boltfooddemo.presentation.utils.Screens
 import com.example.boltfooddemo.presentation.viewmodel.AuthViewModel
 import com.example.boltfooddemo.presentation.viewmodel.MainViewModel
+import com.example.boltfooddemo.utils.Resource
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -24,7 +27,9 @@ fun Navigation(
     mainViewModel: MainViewModel = koinViewModel(),
     authViewModel: AuthViewModel = koinViewModel()
 ) {
+    val context = LocalContext.current
     val user = authViewModel.user.collectAsState()
+    val phone = mainViewModel.selectedCountryCode.value + mainViewModel.phoneText.value
 
     NavHost(
         navController = navController,
@@ -55,27 +60,27 @@ fun Navigation(
             )
         }
         composable(Screens.PasswordScreen.route) {
-            val phone = mainViewModel.selectedCountryCode.value + mainViewModel.phoneText.value
             LaunchedEffect(phone) {
                 authViewModel.getUser(phone)
             }
             PasswordScreen(
                 isRegistration = user.value == null,
+                passwordText = mainViewModel.passwordText.value,
                 onValueChange = { mainViewModel.updatePasswordText(it) },
                 onNavigateBack = { navController.popBackStack() },
                 onNavigate = {
                     if (user.value == null) {
-                        navController.navigate(Screens.RegistrationScreen.route) {
-                            popUpTo(Screens.PasswordScreen.route) {
-                                inclusive = true
-                            }
-                        }
+                        navController.navigate(Screens.RegistrationScreen.route)
                     } else {
-                        authViewModel.login(mainViewModel.passwordText.value)
-                        navController.navigate(Screens.MainScreen.route) {
-                            popUpTo(Screens.PasswordScreen.route) {
-                                inclusive = true
+                        val loginResult = authViewModel.login(mainViewModel.passwordText.value)
+                        if (loginResult is Resource.Success) {
+                            navController.navigate(Screens.MainScreen.route) {
+                                popUpTo(Screens.PasswordScreen.route) {
+                                    inclusive = true
+                                }
                             }
+                        } else {
+                            Toast.makeText(context, loginResult.message, Toast.LENGTH_SHORT).show()
                         }
                     }
                 }
@@ -95,10 +100,35 @@ fun Navigation(
             )
         }
         composable(Screens.MainScreen.route) {
-            MainScreen()
+            MainScreen(
+
+            )
         }
         composable(Screens.RegistrationScreen.route) {
-            RegistrationScreen()
+            RegistrationScreen(
+                name = mainViewModel.nameText.value,
+                onNameChange = { mainViewModel.updateNameText(it) },
+                surname = mainViewModel.surnameText.value,
+                onSurnameChange = { mainViewModel.updateSurnameText(it) },
+                email = mainViewModel.emailText.value,
+                onEmailChange = { mainViewModel.updateEmailText(it) },
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToMainScreen = {
+                    authViewModel.signUp(
+                        phone,
+                        mainViewModel.passwordText.value,
+                        mainViewModel.nameText.value,
+                        mainViewModel.surnameText.value,
+                        mainViewModel.emailText.value
+                    )
+                    authViewModel.getUser(phone)
+                    navController.navigate(Screens.MainScreen.route) {
+                        popUpTo(Screens.RegistrationScreen.route) {
+                            inclusive = true
+                        }
+                    }
+                }
+            )
         }
     }
 }

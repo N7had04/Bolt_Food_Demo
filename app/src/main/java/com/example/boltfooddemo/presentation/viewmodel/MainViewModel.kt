@@ -37,6 +37,9 @@ class MainViewModel(
     val selectedCountryCode = mutableStateOf("+93")
     val searchCountryCodeText = mutableStateOf("")
     val passwordText = mutableStateOf("")
+    val nameText = mutableStateOf("")
+    val surnameText = mutableStateOf("")
+    val emailText = mutableStateOf("")
 
     fun updatePhoneText(text: String) {
         phoneText.value = text
@@ -52,6 +55,18 @@ class MainViewModel(
 
     fun updatePasswordText(text: String) {
         passwordText.value = text
+    }
+
+    fun updateNameText(text: String) {
+        nameText.value = text
+    }
+
+    fun updateSurnameText(text: String) {
+        surnameText.value = text
+    }
+
+    fun updateEmailText(text: String) {
+        emailText.value = text
     }
 
     fun getAllRestaurants() {
