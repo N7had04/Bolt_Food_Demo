@@ -30,6 +30,7 @@ fun Navigation(
     val context = LocalContext.current
     val user = authViewModel.user.collectAsState()
     val phone = mainViewModel.selectedCountryCode.value + mainViewModel.phoneText.value
+    val isLoggedIn = authViewModel.isLoggedIn.collectAsState(initial = false)
 
     NavHost(
         navController = navController,
@@ -38,9 +39,17 @@ fun Navigation(
         composable(Screens.Splashscreen.route) {
             SplashScreen(
                 onNavigate = {
-                    navController.navigate(Screens.PhoneScreen.route) {
-                        popUpTo(Screens.Splashscreen.route) {
-                            inclusive = true
+                    if (isLoggedIn.value) {
+                        navController.navigate(Screens.MainScreen.route) {
+                            popUpTo(Screens.Splashscreen.route) {
+                                inclusive = true
+                            }
+                        }
+                    } else {
+                        navController.navigate(Screens.PhoneScreen.route) {
+                            popUpTo(Screens.Splashscreen.route) {
+                                inclusive = true
+                            }
                         }
                     }
                 }
@@ -100,9 +109,7 @@ fun Navigation(
             )
         }
         composable(Screens.MainScreen.route) {
-            MainScreen(
-
-            )
+            MainScreen()
         }
         composable(Screens.RegistrationScreen.route) {
             RegistrationScreen(

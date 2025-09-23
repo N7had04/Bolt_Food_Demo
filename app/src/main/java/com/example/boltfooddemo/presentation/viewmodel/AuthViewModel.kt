@@ -29,6 +29,8 @@ class AuthViewModel(
     private val _user = MutableStateFlow<User?>(null)
     val user = _user.asStateFlow()
 
+    val isLoggedIn = getLoginState()
+
     fun signUp(phone: String, password: String, name: String, lastName: String, email: String) {
         viewModelScope.launch {
             saveUserUseCase.execute(User(phone = phone, password = password, name = name, lastname = lastName, email = email))
