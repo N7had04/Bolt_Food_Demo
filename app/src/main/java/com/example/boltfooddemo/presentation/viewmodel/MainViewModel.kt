@@ -1,16 +1,18 @@
 package com.example.boltfooddemo.presentation.viewmodel
 
 import android.util.Log
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.boltfooddemo.data.model.CountryCode
 import com.example.boltfooddemo.data.model.MenuItem
 import com.example.boltfooddemo.data.model.Restaurant
+import com.example.boltfooddemo.domain.usecase.GetAllPastOrdersUseCase
 import com.example.boltfooddemo.domain.usecase.GetAllRestaurantsUseCase
 import com.example.boltfooddemo.domain.usecase.GetMenuUseCase
 import com.example.boltfooddemo.domain.usecase.LoadCountryCodesUseCase
+import com.example.boltfooddemo.domain.usecase.SaveRestaurantUseCase
 import com.example.boltfooddemo.utils.Resource
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -18,6 +20,8 @@ import kotlinx.coroutines.launch
 class MainViewModel(
     private val getAllRestaurantsUseCase: GetAllRestaurantsUseCase,
     private val getMenuUseCase: GetMenuUseCase,
+    private val saveRestaurantUseCase: SaveRestaurantUseCase,
+    private val getAllPastOrdersUseCase: GetAllPastOrdersUseCase,
     private val loadCountryCodesUseCase: LoadCountryCodesUseCase
 ): ViewModel() {
 
@@ -33,40 +37,53 @@ class MainViewModel(
     private val _isLoading = MutableStateFlow<Boolean>(false)
     val isLoading = _isLoading.asStateFlow()
 
-    val phoneText = mutableStateOf("")
-    val selectedCountryCode = mutableStateOf("+93")
-    val searchCountryCodeText = mutableStateOf("")
-    val passwordText = mutableStateOf("")
-    val nameText = mutableStateOf("")
-    val surnameText = mutableStateOf("")
-    val emailText = mutableStateOf("")
+    private val _phoneText = MutableStateFlow<String>("")
+    val phoneText = _phoneText.asStateFlow()
+
+    private val _selectedCountryCode = MutableStateFlow<String>("+93")
+    val selectedCountryCode = _selectedCountryCode.asStateFlow()
+
+    private val _searchCountryCodeText = MutableStateFlow<String>("")
+    val searchCountryCodeText = _searchCountryCodeText.asStateFlow()
+
+    private val _passwordText = MutableStateFlow<String>("")
+    val passwordText = _passwordText.asStateFlow()
+
+    private val _nameText = MutableStateFlow<String>("")
+    val nameText = _nameText.asStateFlow()
+
+    private val _surnameText = MutableStateFlow<String>("")
+    val surnameText = _surnameText.asStateFlow()
+
+    private val _emailText = MutableStateFlow<String>("")
+    val emailText = _emailText.asStateFlow()
 
     fun updatePhoneText(text: String) {
-        phoneText.value = text
+        _phoneText.value = text
     }
 
     fun updateSelectedCountryCode(code: String) {
-        selectedCountryCode.value = code
+        _selectedCountryCode.value = code
     }
 
     fun updateSearchCountryCodeText(text: String) {
-        searchCountryCodeText.value = text
+        _searchCountryCodeText.value = text
     }
 
     fun updatePasswordText(text: String) {
-        passwordText.value = text
+        _passwordText.value = text
     }
 
     fun updateNameText(text: String) {
-        nameText.value = text
+        _nameText.value = text
     }
 
     fun updateSurnameText(text: String) {
-        surnameText.value = text
+        _surnameText.value = text
     }
 
     fun updateEmailText(text: String) {
-        emailText.value = text
+        _emailText.value = text
     }
 
     fun getAllRestaurants() {
@@ -105,6 +122,16 @@ class MainViewModel(
             }
             _isLoading.value = false
         }
+    }
+
+    fun saveRestaurant(restaurant: Restaurant) {
+        viewModelScope.launch {
+            saveRestaurantUseCase.execute(restaurant)
+        }
+    }
+
+    fun getAllPastOrders(): Flow<List<Restaurant>> {
+        return getAllPastOrdersUseCase.execute()
     }
 
     fun loadCountryCodes(): List<CountryCode> {

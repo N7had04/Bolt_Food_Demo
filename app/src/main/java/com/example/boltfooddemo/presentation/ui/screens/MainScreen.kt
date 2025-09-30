@@ -8,11 +8,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.boltfooddemo.data.model.Restaurant
 import com.example.boltfooddemo.presentation.navigation.MainNavigation
 
 @Composable
 fun MainScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    pastOrders: List<Restaurant>
 ) {
     val navController = rememberNavController()
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
@@ -30,7 +32,8 @@ fun MainScreen(
     ) { padding ->
         MainNavigation(
             modifier = Modifier.padding(padding),
-            navController = navController
+            navController = navController,
+            pastOrders = pastOrders
         )
     }
 }
@@ -38,5 +41,7 @@ fun MainScreen(
 @Preview(showBackground = true)
 @Composable
 fun MainScreenPreview() {
-    MainScreen()
+    MainScreen(
+        pastOrders = emptyList()
+    )
 }

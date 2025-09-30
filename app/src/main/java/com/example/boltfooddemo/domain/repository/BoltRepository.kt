@@ -5,6 +5,8 @@ import com.example.boltfooddemo.data.model.MenuItem
 import com.example.boltfooddemo.data.model.Restaurant
 import com.example.boltfooddemo.data.model.User
 import com.example.boltfooddemo.utils.Resource
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 
 interface BoltRepository {
     suspend fun getAllRestaurants(): Resource<List<Restaurant>>
@@ -13,5 +15,7 @@ interface BoltRepository {
     suspend fun updateUser(user: User)
     suspend fun deleteUser(user: User)
     suspend fun getUserByPhone(phone: String): User?
+    suspend fun insertRestaurant(restaurant: Restaurant)
+    fun getAllPastOrders(): Flow<List<Restaurant>>
     fun loadCountryCodes(): List<CountryCode>
 }

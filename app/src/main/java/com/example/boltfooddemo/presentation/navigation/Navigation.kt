@@ -29,7 +29,17 @@ fun Navigation(
 ) {
     val context = LocalContext.current
     val user = authViewModel.user.collectAsState()
-    val phone = mainViewModel.selectedCountryCode.value + mainViewModel.phoneText.value
+
+    val phoneText = mainViewModel.phoneText.collectAsState()
+    val selectedCountryCode = mainViewModel.selectedCountryCode.collectAsState()
+    val searchCountryCodeText = mainViewModel.searchCountryCodeText.collectAsState()
+    val passwordText = mainViewModel.passwordText.collectAsState()
+    val nameText = mainViewModel.nameText.collectAsState()
+    val surnameText = mainViewModel.surnameText.collectAsState()
+    val emailText = mainViewModel.emailText.collectAsState()
+    val pastOrders = mainViewModel.getAllPastOrders().collectAsState(initial = emptyList())
+
+    val phone = selectedCountryCode.value + phoneText.value
     val isLoggedIn = authViewModel.isLoggedIn.collectAsState(initial = false)
 
     NavHost(
@@ -57,8 +67,8 @@ fun Navigation(
         }
         composable(Screens.PhoneScreen.route) {
             PhoneScreen(
-                selectedCountryCode = mainViewModel.selectedCountryCode.value,
-                phoneText = mainViewModel.phoneText.value,
+                selectedCountryCode = selectedCountryCode.value,
+                phoneText = phoneText.value,
                 onValueChange = { mainViewModel.updatePhoneText(it) },
                 onNavigateToPasswordScreen = {
                     navController.navigate(Screens.PasswordScreen.route)
@@ -74,14 +84,14 @@ fun Navigation(
             }
             PasswordScreen(
                 isRegistration = user.value == null,
-                passwordText = mainViewModel.passwordText.value,
+                passwordText = passwordText.value,
                 onValueChange = { mainViewModel.updatePasswordText(it) },
                 onNavigateBack = { navController.popBackStack() },
                 onNavigate = {
                     if (user.value == null) {
                         navController.navigate(Screens.RegistrationScreen.route)
                     } else {
-                        val loginResult = authViewModel.login(mainViewModel.passwordText.value)
+                        val loginResult = authViewModel.login(passwordText.value)
                         if (loginResult is Resource.Success) {
                             navController.navigate(Screens.MainScreen.route) {
                                 popUpTo(Screens.PasswordScreen.route) {
@@ -99,7 +109,7 @@ fun Navigation(
             val countryCodes = mainViewModel.loadCountryCodes()
             CountryCodesScreen(
                 countryCodes = countryCodes,
-                searchCountryCodeText = mainViewModel.searchCountryCodeText.value,
+                searchCountryCodeText = searchCountryCodeText.value,
                 onValueChange = { mainViewModel.updateSearchCountryCodeText(it) },
                 onNavigateBack = { navController.popBackStack() },
                 onNavigateToPhoneScreen = { dialCode ->
@@ -109,28 +119,36 @@ fun Navigation(
             )
         }
         composable(Screens.MainScreen.route) {
-            MainScreen()
+            MainScreen(
+                pastOrders = pastOrders.value
+            )
         }
         composable(Screens.RegistrationScreen.route) {
             RegistrationScreen(
-                name = mainViewModel.nameText.value,
+                name = nameText.value,
                 onNameChange = { mainViewModel.updateNameText(it) },
-                surname = mainViewModel.surnameText.value,
+                surname = surnameText.value,
                 onSurnameChange = { mainViewModel.updateSurnameText(it) },
-                email = mainViewModel.emailText.value,
+                email = emailText.value,
                 onEmailChange = { mainViewModel.updateEmailText(it) },
                 onNavigateBack = { navController.popBackStack() },
                 onNavigateToMainScreen = {
                     authViewModel.signUp(
                         phone,
-                        mainViewModel.passwordText.value,
-                        mainViewModel.nameText.value,
-                        mainViewModel.surnameText.value,
-                        mainViewModel.emailText.value
+                        passwordText.value,
+                        nameText.value,
+                        surnameText.value,
+                        emailText.value
                     )
                     authViewModel.getUser(phone)
                     navController.navigate(Screens.MainScreen.route) {
                         popUpTo(Screens.RegistrationScreen.route) {
+                            inclusive = true
+                        }
+                        popUpTo(Screens.PasswordScreen.route) {
+                            inclusive = true
+                        }
+                        popUpTo(Screens.PhoneScreen.route) {
                             inclusive = true
                         }
                     }

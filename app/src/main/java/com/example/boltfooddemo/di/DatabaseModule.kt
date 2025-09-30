@@ -17,4 +17,9 @@ val databaseModule = module {
     single {
         get<UserDatabase>().userDao
     }
+
+    single {
+        get<UserDatabase>().restaurantDao
+    }
+
 }
