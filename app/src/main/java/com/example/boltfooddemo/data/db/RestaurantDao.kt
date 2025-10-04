@@ -4,14 +4,14 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.boltfooddemo.data.model.Restaurant
+import com.example.boltfooddemo.data.model.MenuItem
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface RestaurantDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertRestaurant(restaurant: Restaurant)
+    suspend fun insertRestaurant(restaurant: MenuItem)
 
-    @Query("SELECT * FROM restaurant")
-    fun getAllPastOrders(): Flow<List<Restaurant>>
+    @Query("SELECT * FROM menu_item")
+    fun getAllPastOrders(): Flow<List<MenuItem>>
 }

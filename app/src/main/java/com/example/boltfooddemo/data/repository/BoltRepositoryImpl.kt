@@ -1,7 +1,6 @@
 package com.example.boltfooddemo.data.repository
 
 import android.content.Context
-import androidx.compose.runtime.collectAsState
 import com.example.boltfooddemo.R
 import com.example.boltfooddemo.data.db.RestaurantDao
 import com.example.boltfooddemo.data.db.UserDao
@@ -12,14 +11,7 @@ import com.example.boltfooddemo.data.model.User
 import com.example.boltfooddemo.data.network.BoltService
 import com.example.boltfooddemo.domain.repository.BoltRepository
 import com.example.boltfooddemo.utils.Resource
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.serialization.json.Json
 
 class BoltRepositoryImpl(
@@ -63,11 +55,11 @@ class BoltRepositoryImpl(
         return userDAO.getUserByPhone(phone)
     }
 
-    override suspend fun insertRestaurant(restaurant: Restaurant) {
-        restaurantDAO.insertRestaurant(restaurant)
+    override suspend fun insertRestaurant(menuItem: MenuItem) {
+        restaurantDAO.insertRestaurant(menuItem)
     }
 
-    override fun getAllPastOrders(): Flow<List<Restaurant>> {
+    override fun getAllPastOrders(): Flow<List<MenuItem>> {
         return restaurantDAO.getAllPastOrders()
     }
 

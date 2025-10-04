@@ -6,15 +6,19 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.boltfooddemo.data.model.MenuItem
 import com.example.boltfooddemo.data.model.Restaurant
-import com.example.boltfooddemo.presentation.navigation.MainNavigation
+import com.example.boltfooddemo.presentation.utils.Screens
 
 @Composable
 fun MainScreen(
     modifier: Modifier = Modifier,
-    pastOrders: List<Restaurant>
+    pastOrders: List<MenuItem>,
+    restaurants: List<Restaurant>
 ) {
     val navController = rememberNavController()
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
@@ -30,11 +34,32 @@ fun MainScreen(
             } }
         ) }
     ) { padding ->
-        MainNavigation(
-            modifier = Modifier.padding(padding),
+        NavHost(
             navController = navController,
-            pastOrders = pastOrders
-        )
+            startDestination = Screens.HomeScreen.route,
+            modifier = modifier.padding(padding)
+        ) {
+            composable(Screens.HomeScreen.route) {
+                HomeScreen(
+                    pastOrders = pastOrders,
+                    restaurants = restaurants,
+                    onNavigateToAllScreen = {},
+                    onNavigateToInfoScreen = {}
+                )
+            }
+            composable(Screens.StoreScreen.route) {
+                StoreScreen()
+            }
+            composable(Screens.SearchScreen.route) {
+                SearchScreen()
+            }
+            composable(Screens.OrderScreen.route) {
+                OrderScreen()
+            }
+            composable(Screens.AccountScreen.route) {
+                AccountScreen()
+            }
+        }
     }
 }
 
@@ -42,6 +67,7 @@ fun MainScreen(
 @Composable
 fun MainScreenPreview() {
     MainScreen(
-        pastOrders = emptyList()
+        pastOrders = emptyList(),
+        restaurants = emptyList()
     )
 }

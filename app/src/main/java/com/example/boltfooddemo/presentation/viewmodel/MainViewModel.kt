@@ -10,7 +10,7 @@ import com.example.boltfooddemo.domain.usecase.GetAllPastOrdersUseCase
 import com.example.boltfooddemo.domain.usecase.GetAllRestaurantsUseCase
 import com.example.boltfooddemo.domain.usecase.GetMenuUseCase
 import com.example.boltfooddemo.domain.usecase.LoadCountryCodesUseCase
-import com.example.boltfooddemo.domain.usecase.SaveRestaurantUseCase
+import com.example.boltfooddemo.domain.usecase.SaveMenuItemUseCase
 import com.example.boltfooddemo.utils.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 class MainViewModel(
     private val getAllRestaurantsUseCase: GetAllRestaurantsUseCase,
     private val getMenuUseCase: GetMenuUseCase,
-    private val saveRestaurantUseCase: SaveRestaurantUseCase,
+    private val saveMenuItemUseCase: SaveMenuItemUseCase,
     private val getAllPastOrdersUseCase: GetAllPastOrdersUseCase,
     private val loadCountryCodesUseCase: LoadCountryCodesUseCase
 ): ViewModel() {
@@ -124,13 +124,13 @@ class MainViewModel(
         }
     }
 
-    fun saveRestaurant(restaurant: Restaurant) {
+    fun saveMenuItem(menuItem: MenuItem) {
         viewModelScope.launch {
-            saveRestaurantUseCase.execute(restaurant)
+            saveMenuItemUseCase.execute(menuItem)
         }
     }
 
-    fun getAllPastOrders(): Flow<List<Restaurant>> {
+    fun getAllPastOrders(): Flow<List<MenuItem>> {
         return getAllPastOrdersUseCase.execute()
     }
 

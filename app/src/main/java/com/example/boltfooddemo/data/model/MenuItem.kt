@@ -1,23 +1,19 @@
 package com.example.boltfooddemo.data.model
 
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-@Serializable
+@Entity(tableName = "menu_item")
 data class MenuItem(
-    @SerialName("imageUrl")
+    @PrimaryKey(autoGenerate = true)
+    val itemID: Int = 0,
     val imageUrl: String,
-    @SerialName("itemDescription")
     val itemDescription: String,
-    @SerialName("itemID")
-    val itemID: Int,
-    @SerialName("itemName")
     val itemName: String,
-    @SerialName("itemPrice")
     val itemPrice: Double,
-    @SerialName("restaurantID")
     val restaurantID: Int,
-    @SerialName("restaurantName")
     val restaurantName: String
 )

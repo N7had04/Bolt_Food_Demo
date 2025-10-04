@@ -38,6 +38,7 @@ fun Navigation(
     val surnameText = mainViewModel.surnameText.collectAsState()
     val emailText = mainViewModel.emailText.collectAsState()
     val pastOrders = mainViewModel.getAllPastOrders().collectAsState(initial = emptyList())
+    val restaurants = mainViewModel.restaurants.collectAsState()
 
     val phone = selectedCountryCode.value + phoneText.value
     val isLoggedIn = authViewModel.isLoggedIn.collectAsState(initial = false)
@@ -118,11 +119,6 @@ fun Navigation(
                 }
             )
         }
-        composable(Screens.MainScreen.route) {
-            MainScreen(
-                pastOrders = pastOrders.value
-            )
-        }
         composable(Screens.RegistrationScreen.route) {
             RegistrationScreen(
                 name = nameText.value,
@@ -153,6 +149,15 @@ fun Navigation(
                         }
                     }
                 }
+            )
+        }
+        composable(Screens.MainScreen.route) {
+            LaunchedEffect(Unit) {
+                mainViewModel.getAllRestaurants()
+            }
+            MainScreen(
+                pastOrders = pastOrders.value,
+                restaurants = restaurants.value
             )
         }
     }

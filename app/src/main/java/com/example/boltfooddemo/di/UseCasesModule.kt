@@ -9,7 +9,7 @@ import com.example.boltfooddemo.domain.usecase.GetMenuUseCase
 import com.example.boltfooddemo.domain.usecase.GetUserUseCase
 import com.example.boltfooddemo.domain.usecase.LoadCountryCodesUseCase
 import com.example.boltfooddemo.domain.usecase.SaveLoginStateUseCase
-import com.example.boltfooddemo.domain.usecase.SaveRestaurantUseCase
+import com.example.boltfooddemo.domain.usecase.SaveMenuItemUseCase
 import com.example.boltfooddemo.domain.usecase.SaveUserUseCase
 import com.example.boltfooddemo.domain.usecase.UpdateUserUseCase
 import org.koin.dsl.module
@@ -22,7 +22,7 @@ val useCasesModule = module {
     single { DeleteUserUseCase(get()) }
     single { GetUserUseCase(get()) }
     single { SaveLoginStateUseCase(get()) }
-    single { SaveRestaurantUseCase(get()) }
+    single { SaveMenuItemUseCase(get()) }
     single { GetAllPastOrdersUseCase(get()) }
     single { LoadCountryCodesUseCase(get()) }
     single { GetLoginStateUseCase(get()) }

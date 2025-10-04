@@ -3,10 +3,9 @@ package com.example.boltfooddemo.domain.usecase
 import com.example.boltfooddemo.data.model.MenuItem
 import com.example.boltfooddemo.data.model.Restaurant
 import com.example.boltfooddemo.domain.repository.BoltRepository
-import kotlinx.coroutines.flow.Flow
 
-class GetAllPastOrdersUseCase(private val boltRepository: BoltRepository) {
-    fun execute(): Flow<List<MenuItem>> {
-        return boltRepository.getAllPastOrders()
+class SaveMenuItemUseCase(private val boltRepository: BoltRepository) {
+    suspend fun execute(menuItem: MenuItem) {
+        boltRepository.insertRestaurant(menuItem)
     }
 }
