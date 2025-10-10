@@ -4,13 +4,17 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.boltfooddemo.data.model.CountryCode
+import com.example.boltfooddemo.data.model.FavRestaurant
 import com.example.boltfooddemo.data.model.MenuItem
 import com.example.boltfooddemo.data.model.Restaurant
+import com.example.boltfooddemo.domain.usecase.DeleteFavRestaurantUseCase
+import com.example.boltfooddemo.domain.usecase.GetAllFavRestaurantsUseCase
 import com.example.boltfooddemo.domain.usecase.GetAllPastOrdersUseCase
 import com.example.boltfooddemo.domain.usecase.GetAllRestaurantsUseCase
 import com.example.boltfooddemo.domain.usecase.GetMenuUseCase
 import com.example.boltfooddemo.domain.usecase.LoadCountryCodesUseCase
-import com.example.boltfooddemo.domain.usecase.SaveMenuItemUseCase
+import com.example.boltfooddemo.domain.usecase.SaveFavRestaurantUseCase
+import com.example.boltfooddemo.domain.usecase.SaveRestaurantUseCase
 import com.example.boltfooddemo.utils.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,8 +24,11 @@ import kotlinx.coroutines.launch
 class MainViewModel(
     private val getAllRestaurantsUseCase: GetAllRestaurantsUseCase,
     private val getMenuUseCase: GetMenuUseCase,
-    private val saveMenuItemUseCase: SaveMenuItemUseCase,
+    private val saveRestaurantUseCase: SaveRestaurantUseCase,
     private val getAllPastOrdersUseCase: GetAllPastOrdersUseCase,
+    private val saveFavRestaurantUseCase: SaveFavRestaurantUseCase,
+    private val deleteFavRestaurantUseCase: DeleteFavRestaurantUseCase,
+    private val getAllFavRestaurantsUseCase: GetAllFavRestaurantsUseCase,
     private val loadCountryCodesUseCase: LoadCountryCodesUseCase
 ): ViewModel() {
 
@@ -124,14 +131,30 @@ class MainViewModel(
         }
     }
 
-    fun saveMenuItem(menuItem: MenuItem) {
+    fun saveRestaurant(restaurant: Restaurant) {
         viewModelScope.launch {
-            saveMenuItemUseCase.execute(menuItem)
+            saveRestaurantUseCase.execute(restaurant)
         }
     }
 
-    fun getAllPastOrders(): Flow<List<MenuItem>> {
+    fun getAllPastOrders(): Flow<List<Restaurant>> {
         return getAllPastOrdersUseCase.execute()
+    }
+
+    fun saveFavRestaurant(favRestaurant: FavRestaurant) {
+        viewModelScope.launch {
+            saveFavRestaurantUseCase.execute(favRestaurant)
+        }
+    }
+
+    fun deleteFavRestaurant(favRestaurant: FavRestaurant) {
+        viewModelScope.launch {
+            deleteFavRestaurantUseCase.execute(favRestaurant)
+        }
+    }
+
+    fun getAllFavRestaurants(): Flow<List<FavRestaurant>> {
+        return getAllFavRestaurantsUseCase.execute()
     }
 
     fun loadCountryCodes(): List<CountryCode> {

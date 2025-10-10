@@ -10,14 +10,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.boltfooddemo.data.model.MenuItem
 import com.example.boltfooddemo.data.model.Restaurant
 import com.example.boltfooddemo.presentation.utils.Screens
 
 @Composable
 fun MainScreen(
     modifier: Modifier = Modifier,
-    pastOrders: List<MenuItem>,
+    pastOrders: List<Restaurant>,
     restaurants: List<Restaurant>
 ) {
     val navController = rememberNavController()

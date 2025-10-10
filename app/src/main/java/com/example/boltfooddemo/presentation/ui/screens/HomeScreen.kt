@@ -43,9 +43,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
 import com.example.boltfooddemo.R
-import com.example.boltfooddemo.data.model.MenuItem
 import com.example.boltfooddemo.data.model.Restaurant
 import com.example.boltfooddemo.presentation.ui.theme.Green217
 import com.example.boltfooddemo.presentation.ui.theme.LightGray
@@ -54,169 +52,165 @@ import com.example.boltfooddemo.presentation.ui.theme.LightGray
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    pastOrders: List<MenuItem>,
+    pastOrders: List<Restaurant>,
     restaurants: List<Restaurant>,
     onNavigateToAllScreen: () -> Unit,
     onNavigateToInfoScreen: () -> Unit
 ) {
-    LazyColumn(modifier = modifier.fillMaxSize()) {
-        stickyHeader {
-            OutlinedTextField(
-                value = "",
-                onValueChange = {},
-                placeholder = {
-                    Text(
-                        text = "Food, restaurants, stores...",
-                        color = Color.Gray
-                    )
-                },
-                keyboardOptions = KeyboardOptions(
-                    imeAction = ImeAction.Search
-                ),
-                keyboardActions = KeyboardActions(
-                    onSearch = {}
-                ),
-                leadingIcon = {
-                    Icon(imageVector = Icons.Default.Search, contentDescription = null)
-                },
-                trailingIcon = {
-                    IconButton(
-                        onClick = {}
-                    ) {
-                        Icon(imageVector = Icons.Default.Tune, contentDescription = null)
-                    }
-                },
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Green217,
-                    unfocusedBorderColor = LightGray,
-                    cursorColor = Green217,
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = LightGray
-                ),
-                shape = RoundedCornerShape(10.dp),
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 20.dp)
-            )
-        }
+    Column(modifier = modifier.fillMaxSize()) {
+        OutlinedTextField(
+            value = "",
+            onValueChange = {},
+            placeholder = {
+                Text(
+                    text = "Food, restaurants, stores...",
+                    color = Color.Gray
+                )
+            },
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Search
+            ),
+            keyboardActions = KeyboardActions(
+                onSearch = {}
+            ),
+            leadingIcon = {
+                Icon(imageVector = Icons.Default.Search, contentDescription = null)
+            },
+            trailingIcon = {
+                IconButton(
+                    onClick = {}
+                ) {
+                    Icon(imageVector = Icons.Default.Tune, contentDescription = null)
+                }
+            },
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Green217,
+                unfocusedBorderColor = LightGray,
+                cursorColor = Green217,
+                focusedContainerColor = Color.White,
+                unfocusedContainerColor = LightGray
+            ),
+            shape = RoundedCornerShape(10.dp),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 20.dp)
+        )
 
         if (pastOrders.isNotEmpty()) {
-            item {
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(16.dp).clickable { onNavigateToAllScreen() },
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "Order Again",
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = "All",
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-
-                        Spacer(modifier = Modifier.width(8.dp))
-
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
-                            contentDescription = null
-                        )
-                    }
-                }
-            }
-
-            item {
-                LazyRow(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    items(pastOrders) {
-                        Column(
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.width(130.dp).clickable{ onNavigateToInfoScreen() }
-                        ) {
-                            AsyncImage(
-                                model = it.imageUrl,
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .size(120.dp)
-                                    .padding(bottom = 8.dp)
-                                    .clip(RoundedCornerShape(12.dp)),
-                                contentScale = ContentScale.Crop
-                            )
-
-                            Text(
-                                text = it.restaurantName,
-                                fontSize = 16.sp,
-                                textAlign = TextAlign.Center,
-                            )
-                        }
-                    }
-                }
-            }
-        }
-
-        item {
             Row(
-                modifier = Modifier.fillMaxWidth().padding(top = 16.dp, start = 16.dp, end = 16.dp),
+                modifier = Modifier.fillMaxWidth().padding(16.dp).clickable { onNavigateToAllScreen() },
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Explore all places",
+                    text = "Order Again",
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold
                 )
-            }
-        }
-
-        items(restaurants) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-                    .clickable{ onNavigateToInfoScreen() }
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.bolt_food),
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-
-                    IconButton(
-                        onClick = {}
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.FavoriteBorder,
-                            contentDescription = null,
-                            tint = Color.White,
-                            modifier = Modifier.align(Alignment.TopEnd).padding(16.dp)
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = it.restaurantName,
+                        text = "All",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold
                     )
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
+                        contentDescription = null
+                    )
+                }
+            }
+
+            LazyRow(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(pastOrders) {
+                    Column(
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.width(130.dp).clickable{ onNavigateToInfoScreen() }
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.bolt_food),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(120.dp)
+                                .padding(bottom = 8.dp)
+                                .clip(RoundedCornerShape(12.dp)),
+                            contentScale = ContentScale.Crop
+                        )
+
+                        Text(
+                            text = it.restaurantName,
+                            fontSize = 16.sp,
+                            textAlign = TextAlign.Center,
+                        )
+                    }
+                }
+            }
+        }
+
+        LazyColumn {
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(top = 16.dp, start = 16.dp, end = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Explore all places",
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+
+            items(restaurants) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                        .clickable{ onNavigateToInfoScreen() }
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp)
+                            .clip(RoundedCornerShape(12.dp))
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.bolt_food),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize()
+                        )
+
+                        IconButton(
+                            onClick = {},
+                            modifier = Modifier.align(Alignment.TopEnd)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.FavoriteBorder,
+                                contentDescription = null,
+                                tint = Color.White
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = it.restaurantName,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 }
             }
         }
@@ -228,38 +222,13 @@ fun HomeScreen(
 fun HomeScreenPreview() {
     HomeScreen(
         pastOrders = listOf(
-            MenuItem(
-                imageUrl = "https://fakerestaurantapi.runasp.net/images/haleem.jpg",
-                itemDescription = "",
-                itemName = "",
-                itemPrice = 0.0,
-                restaurantID = 0,
-                restaurantName = "50 Qepik Food and Coffee"
-            ),
-            MenuItem(
-                imageUrl = "https://fakerestaurantapi.runasp.net/images/mutton biryani.jpg",
-                itemDescription = "",
-                itemName = "",
-                itemPrice = 0.0,
-                restaurantID = 1,
-                restaurantName = "Burma Yasamal"
-            ),
-            MenuItem(
-                imageUrl = "https://fakerestaurantapi.runasp.net/images/mutton biryani.jpg",
-                itemDescription = "",
-                itemName = "",
-                itemPrice = 0.0,
-                restaurantID = 2,
-                restaurantName = "Burma Yasamal"
-            ),
-            MenuItem(
-                imageUrl = "https://fakerestaurantapi.runasp.net/images/mutton biryani.jpg",
-                itemDescription = "",
-                itemName = "",
-                itemPrice = 0.0,
-                restaurantID = 3,
-                restaurantName = "Burma Yasamal"
-            )
+            Restaurant(0, "address", "parkinglot", "name", "type"),
+            Restaurant(1, "address", "parkinglot", "name", "type"),
+            Restaurant(2, "address", "parkinglot", "name", "type"),
+            Restaurant(3, "address", "parkinglot", "name", "type"),
+            Restaurant(4, "address", "parkinglot", "name", "type"),
+            Restaurant(5, "address", "parkinglot", "name", "type"),
+            Restaurant(6, "address", "parkinglot", "name", "type")
         ),
         restaurants = listOf(
             Restaurant(0, "address", "parkinglot", "name", "type"),

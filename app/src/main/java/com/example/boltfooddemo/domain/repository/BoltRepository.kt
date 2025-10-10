@@ -1,6 +1,7 @@
 package com.example.boltfooddemo.domain.repository
 
 import com.example.boltfooddemo.data.model.CountryCode
+import com.example.boltfooddemo.data.model.FavRestaurant
 import com.example.boltfooddemo.data.model.MenuItem
 import com.example.boltfooddemo.data.model.Restaurant
 import com.example.boltfooddemo.data.model.User
@@ -14,7 +15,10 @@ interface BoltRepository {
     suspend fun updateUser(user: User)
     suspend fun deleteUser(user: User)
     suspend fun getUserByPhone(phone: String): User?
-    suspend fun insertRestaurant(menuItem: MenuItem)
-    fun getAllPastOrders(): Flow<List<MenuItem>>
+    suspend fun insertRestaurant(restaurant: Restaurant)
+    fun getAllPastOrders(): Flow<List<Restaurant>>
+    suspend fun insertFavRestaurant(restaurant: FavRestaurant)
+    suspend fun deleteFavRestaurant(restaurant: FavRestaurant)
+    fun getAllFavRestaurants(): Flow<List<FavRestaurant>>
     fun loadCountryCodes(): List<CountryCode>
 }

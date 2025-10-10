@@ -4,11 +4,11 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.serialization.Serializable
 
-@Entity(tableName = "restaurant")
+@Entity(tableName = "favourite_restaurants")
 @Serializable
-data class Restaurant(
-    @PrimaryKey
-    val restaurantID: Int,
+data class FavRestaurant(
+    @PrimaryKey(autoGenerate = true)
+    val restaurantID: Int = 0,
     val address: String,
     val parkingLot: String,
     val restaurantName: String,

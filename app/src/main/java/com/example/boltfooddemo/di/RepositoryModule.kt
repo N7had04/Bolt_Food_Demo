@@ -8,6 +8,6 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 val repositoryModule = module {
-    single<BoltRepository> { BoltRepositoryImpl(get(), get(), get(), androidContext()) }
+    single<BoltRepository> { BoltRepositoryImpl(get(), get(), get(), get(), androidContext()) }
     single<UserPreferencesRepository> { UserPreferencesRepositoryImpl(androidContext()) }
 }

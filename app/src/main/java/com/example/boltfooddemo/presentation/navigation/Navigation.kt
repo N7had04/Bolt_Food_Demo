@@ -38,6 +38,7 @@ fun Navigation(
     val surnameText = mainViewModel.surnameText.collectAsState()
     val emailText = mainViewModel.emailText.collectAsState()
     val pastOrders = mainViewModel.getAllPastOrders().collectAsState(initial = emptyList())
+    val favRestaurants = mainViewModel.getAllFavRestaurants().collectAsState(initial = emptyList())
     val restaurants = mainViewModel.restaurants.collectAsState()
 
     val phone = selectedCountryCode.value + phoneText.value

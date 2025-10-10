@@ -1,6 +1,8 @@
 package com.example.boltfooddemo.di
 
+import com.example.boltfooddemo.domain.usecase.DeleteFavRestaurantUseCase
 import com.example.boltfooddemo.domain.usecase.DeleteUserUseCase
+import com.example.boltfooddemo.domain.usecase.GetAllFavRestaurantsUseCase
 import com.example.boltfooddemo.domain.usecase.GetAllPastOrdersUseCase
 import com.example.boltfooddemo.domain.usecase.GetAllRestaurantsUseCase
 import com.example.boltfooddemo.domain.usecase.GetAuthTokenUseCase
@@ -8,8 +10,9 @@ import com.example.boltfooddemo.domain.usecase.GetLoginStateUseCase
 import com.example.boltfooddemo.domain.usecase.GetMenuUseCase
 import com.example.boltfooddemo.domain.usecase.GetUserUseCase
 import com.example.boltfooddemo.domain.usecase.LoadCountryCodesUseCase
+import com.example.boltfooddemo.domain.usecase.SaveFavRestaurantUseCase
 import com.example.boltfooddemo.domain.usecase.SaveLoginStateUseCase
-import com.example.boltfooddemo.domain.usecase.SaveMenuItemUseCase
+import com.example.boltfooddemo.domain.usecase.SaveRestaurantUseCase
 import com.example.boltfooddemo.domain.usecase.SaveUserUseCase
 import com.example.boltfooddemo.domain.usecase.UpdateUserUseCase
 import org.koin.dsl.module
@@ -22,8 +25,11 @@ val useCasesModule = module {
     single { DeleteUserUseCase(get()) }
     single { GetUserUseCase(get()) }
     single { SaveLoginStateUseCase(get()) }
-    single { SaveMenuItemUseCase(get()) }
+    single { SaveRestaurantUseCase(get()) }
     single { GetAllPastOrdersUseCase(get()) }
+    single { SaveFavRestaurantUseCase(get()) }
+    single { DeleteFavRestaurantUseCase(get()) }
+    single { GetAllFavRestaurantsUseCase(get()) }
     single { LoadCountryCodesUseCase(get()) }
     single { GetLoginStateUseCase(get()) }
     single { GetAuthTokenUseCase(get()) }

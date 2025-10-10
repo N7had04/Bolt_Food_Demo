@@ -2,9 +2,11 @@ package com.example.boltfooddemo.data.repository
 
 import android.content.Context
 import com.example.boltfooddemo.R
+import com.example.boltfooddemo.data.db.FavRestaurantDao
 import com.example.boltfooddemo.data.db.RestaurantDao
 import com.example.boltfooddemo.data.db.UserDao
 import com.example.boltfooddemo.data.model.CountryCode
+import com.example.boltfooddemo.data.model.FavRestaurant
 import com.example.boltfooddemo.data.model.MenuItem
 import com.example.boltfooddemo.data.model.Restaurant
 import com.example.boltfooddemo.data.model.User
@@ -18,6 +20,7 @@ class BoltRepositoryImpl(
     private val boltService: BoltService,
     private val userDAO: UserDao,
     private val restaurantDAO: RestaurantDao,
+    private val favRestaurantDAO: FavRestaurantDao,
     private val context: Context
 ): BoltRepository {
 
@@ -55,12 +58,24 @@ class BoltRepositoryImpl(
         return userDAO.getUserByPhone(phone)
     }
 
-    override suspend fun insertRestaurant(menuItem: MenuItem) {
-        restaurantDAO.insertRestaurant(menuItem)
+    override suspend fun insertRestaurant(restaurant: Restaurant) {
+        restaurantDAO.insertRestaurant(restaurant)
     }
 
-    override fun getAllPastOrders(): Flow<List<MenuItem>> {
+    override fun getAllPastOrders(): Flow<List<Restaurant>> {
         return restaurantDAO.getAllPastOrders()
+    }
+
+    override suspend fun insertFavRestaurant(restaurant: FavRestaurant) {
+        favRestaurantDAO.insertFavRestaurant(restaurant)
+    }
+
+    override suspend fun deleteFavRestaurant(restaurant: FavRestaurant) {
+        favRestaurantDAO.deleteFavRestaurant(restaurant)
+    }
+
+    override fun getAllFavRestaurants(): Flow<List<FavRestaurant>> {
+        return favRestaurantDAO.getAllFavRestaurants()
     }
 
     override fun loadCountryCodes(): List<CountryCode> {
