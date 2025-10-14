@@ -10,7 +10,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.boltfooddemo.data.model.FavRestaurant
 import com.example.boltfooddemo.data.model.Restaurant
 import com.example.boltfooddemo.presentation.utils.Screens
 
