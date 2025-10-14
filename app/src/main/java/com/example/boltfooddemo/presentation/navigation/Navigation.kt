@@ -9,6 +9,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.boltfooddemo.data.utils.restaurantToFavRestaurant
 import com.example.boltfooddemo.presentation.ui.screens.CountryCodesScreen
 import com.example.boltfooddemo.presentation.ui.screens.MainScreen
 import com.example.boltfooddemo.presentation.ui.screens.PasswordScreen
@@ -157,8 +158,17 @@ fun Navigation(
                 mainViewModel.getAllRestaurants()
             }
             MainScreen(
+                isFav = {restaurant -> favRestaurants.value.any { it.restaurantID == restaurant.restaurantID }},
                 pastOrders = pastOrders.value,
-                restaurants = restaurants.value
+                restaurants = restaurants.value,
+                onInsertOrDelete = {restaurant ->
+                    val favRestaurant = favRestaurants.value.firstOrNull { it.restaurantID == restaurant.restaurantID }
+                    if (favRestaurant != null) {
+                        mainViewModel.deleteFavRestaurant(favRestaurant)
+                    } else {
+                        mainViewModel.saveFavRestaurant(restaurantToFavRestaurant(restaurant))
+                    }
+                }
             )
         }
     }

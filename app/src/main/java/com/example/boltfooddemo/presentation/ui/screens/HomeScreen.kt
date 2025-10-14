@@ -22,6 +22,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Tune
@@ -44,6 +45,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.boltfooddemo.R
+import com.example.boltfooddemo.data.model.FavRestaurant
 import com.example.boltfooddemo.data.model.Restaurant
 import com.example.boltfooddemo.presentation.ui.theme.Green217
 import com.example.boltfooddemo.presentation.ui.theme.LightGray
@@ -54,8 +56,10 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     pastOrders: List<Restaurant>,
     restaurants: List<Restaurant>,
+    isFav: (Restaurant) -> Boolean,
     onNavigateToAllScreen: () -> Unit,
-    onNavigateToInfoScreen: () -> Unit
+    onNavigateToInfoScreen: () -> Unit,
+    onInsertOrDelete: (Restaurant) -> Unit
 ) {
     Column(modifier = modifier.fillMaxSize()) {
         OutlinedTextField(
@@ -167,7 +171,7 @@ fun HomeScreen(
                 }
             }
 
-            items(restaurants) {
+            items(restaurants) { restaurant ->
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -188,13 +192,13 @@ fun HomeScreen(
                         )
 
                         IconButton(
-                            onClick = {},
+                            onClick = {onInsertOrDelete(restaurant)},
                             modifier = Modifier.align(Alignment.TopEnd)
                         ) {
                             Icon(
-                                imageVector = Icons.Filled.FavoriteBorder,
+                                imageVector = if (isFav(restaurant)) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                                 contentDescription = null,
-                                tint = Color.White
+                                tint = if (isFav(restaurant)) Color.Red else Color.White
                             )
                         }
                     }
@@ -206,7 +210,7 @@ fun HomeScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = it.restaurantName,
+                            text = restaurant.restaurantName,
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold
                         )
@@ -221,6 +225,7 @@ fun HomeScreen(
 @Composable
 fun HomeScreenPreview() {
     HomeScreen(
+        isFav = {true},
         pastOrders = listOf(
             Restaurant(0, "address", "parkinglot", "name", "type"),
             Restaurant(1, "address", "parkinglot", "name", "type"),
@@ -240,6 +245,7 @@ fun HomeScreenPreview() {
             Restaurant(6, "address", "parkinglot", "name", "type")
         ),
         onNavigateToAllScreen = {},
-        onNavigateToInfoScreen = {}
+        onNavigateToInfoScreen = {},
+        onInsertOrDelete = {}
     )
 }

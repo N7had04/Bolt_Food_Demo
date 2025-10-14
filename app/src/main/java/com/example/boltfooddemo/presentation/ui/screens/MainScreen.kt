@@ -10,14 +10,17 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.boltfooddemo.data.model.FavRestaurant
 import com.example.boltfooddemo.data.model.Restaurant
 import com.example.boltfooddemo.presentation.utils.Screens
 
 @Composable
 fun MainScreen(
     modifier: Modifier = Modifier,
+    isFav: (Restaurant) -> Boolean,
     pastOrders: List<Restaurant>,
-    restaurants: List<Restaurant>
+    restaurants: List<Restaurant>,
+    onInsertOrDelete: (Restaurant) -> Unit
 ) {
     val navController = rememberNavController()
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
@@ -42,8 +45,10 @@ fun MainScreen(
                 HomeScreen(
                     pastOrders = pastOrders,
                     restaurants = restaurants,
+                    isFav = isFav,
                     onNavigateToAllScreen = {},
-                    onNavigateToInfoScreen = {}
+                    onNavigateToInfoScreen = {},
+                    onInsertOrDelete = {onInsertOrDelete(it)}
                 )
             }
             composable(Screens.StoreScreen.route) {
@@ -66,7 +71,9 @@ fun MainScreen(
 @Composable
 fun MainScreenPreview() {
     MainScreen(
+        isFav = {true},
         pastOrders = emptyList(),
-        restaurants = emptyList()
+        restaurants = emptyList(),
+        onInsertOrDelete = {}
     )
 }
