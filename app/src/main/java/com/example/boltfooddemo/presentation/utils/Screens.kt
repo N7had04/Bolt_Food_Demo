@@ -12,4 +12,6 @@ sealed class Screens(val route: String) {
     object SearchScreen: Screens("search_screen")
     object OrderScreen: Screens("order_screen")
     object AccountScreen: Screens("account_screen")
+    object AllScreen: Screens("all_screen")
+    object InfoScreen: Screens("info_screen")
 }

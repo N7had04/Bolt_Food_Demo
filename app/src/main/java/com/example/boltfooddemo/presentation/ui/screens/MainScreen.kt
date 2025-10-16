@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.boltfooddemo.data.model.Restaurant
+import com.example.boltfooddemo.presentation.ui.components.BottomNavigationBar
 import com.example.boltfooddemo.presentation.utils.Screens
 
 @Composable
@@ -19,21 +20,26 @@ fun MainScreen(
     isFav: (Restaurant) -> Boolean,
     pastOrders: List<Restaurant>,
     restaurants: List<Restaurant>,
-    onInsertOrDelete: (Restaurant) -> Unit
+    onInsertOrDelete: (Restaurant) -> Unit,
+    onNavigateToAllScreen: (String) -> Unit
 ) {
     val navController = rememberNavController()
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
-        bottomBar = { BottomNavigationBar(
-            isSelected = { currentRoute == it },
-            onNavigate = { navController.navigate(it) {
-                popUpTo(currentRoute.toString()) {
-                    inclusive = true
+        bottomBar = {
+            BottomNavigationBar(
+                isSelected = { currentRoute == it },
+                onNavigate = {
+                    navController.navigate(it) {
+                        popUpTo(currentRoute.toString()) {
+                            inclusive = true
+                        }
+                    }
                 }
-            } }
-        ) }
+            )
+        }
     ) { padding ->
         NavHost(
             navController = navController,
@@ -45,7 +51,7 @@ fun MainScreen(
                     pastOrders = pastOrders,
                     restaurants = restaurants,
                     isFav = isFav,
-                    onNavigateToAllScreen = {},
+                    onNavigateToAllScreen = {onNavigateToAllScreen(it)},
                     onNavigateToInfoScreen = {},
                     onInsertOrDelete = {onInsertOrDelete(it)}
                 )
@@ -73,6 +79,7 @@ fun MainScreenPreview() {
         isFav = {true},
         pastOrders = emptyList(),
         restaurants = emptyList(),
-        onInsertOrDelete = {}
+        onInsertOrDelete = {},
+        onNavigateToAllScreen = {}
     )
 }

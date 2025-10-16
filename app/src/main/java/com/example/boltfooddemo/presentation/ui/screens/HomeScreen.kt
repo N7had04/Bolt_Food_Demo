@@ -56,8 +56,8 @@ fun HomeScreen(
     pastOrders: List<Restaurant>,
     restaurants: List<Restaurant>,
     isFav: (Restaurant) -> Boolean,
-    onNavigateToAllScreen: () -> Unit,
-    onNavigateToInfoScreen: () -> Unit,
+    onNavigateToAllScreen: (String) -> Unit,
+    onNavigateToInfoScreen: (Restaurant) -> Unit,
     onInsertOrDelete: (Restaurant) -> Unit
 ) {
     var isScrollingUp by remember { mutableStateOf(true) }
@@ -95,7 +95,7 @@ fun HomeScreen(
             if (pastOrders.isNotEmpty()) {
                 item {
                     Row(
-                        modifier = Modifier.fillMaxWidth().padding(16.dp).clickable { onNavigateToAllScreen() },
+                        modifier = Modifier.fillMaxWidth().padding(16.dp).clickable { onNavigateToAllScreen("Order Again") },
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -132,7 +132,7 @@ fun HomeScreen(
                             Column(
                                 verticalArrangement = Arrangement.Center,
                                 horizontalAlignment = Alignment.CenterHorizontally,
-                                modifier = Modifier.width(130.dp).clickable{ onNavigateToInfoScreen() }
+                                modifier = Modifier.width(130.dp).clickable{ onNavigateToInfoScreen(it) }
                             ) {
                                 Image(
                                     painter = painterResource(id = R.drawable.bolt_food),
@@ -173,7 +173,7 @@ fun HomeScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp)
-                        .clickable{ onNavigateToInfoScreen() }
+                        .clickable{ onNavigateToInfoScreen(restaurant) }
                 ) {
                     Box(
                         modifier = Modifier
@@ -224,22 +224,22 @@ fun HomeScreenPreview() {
     HomeScreen(
         isFav = {true},
         pastOrders = listOf(
-            Restaurant(0, "address", "parkinglot", "name", "type"),
-            Restaurant(1, "address", "parkinglot", "name", "type"),
-            Restaurant(2, "address", "parkinglot", "name", "type"),
-            Restaurant(3, "address", "parkinglot", "name", "type"),
-            Restaurant(4, "address", "parkinglot", "name", "type"),
-            Restaurant(5, "address", "parkinglot", "name", "type"),
-            Restaurant(6, "address", "parkinglot", "name", "type")
+            Restaurant(0, "address", "parkingLot", "name", "type"),
+            Restaurant(1, "address", "parkingLot", "name", "type"),
+            Restaurant(2, "address", "parkingLot", "name", "type"),
+            Restaurant(3, "address", "parkingLot", "name", "type"),
+            Restaurant(4, "address", "parkingLot", "name", "type"),
+            Restaurant(5, "address", "parkingLot", "name", "type"),
+            Restaurant(6, "address", "parkingLot", "name", "type")
         ),
         restaurants = listOf(
-            Restaurant(0, "address", "parkinglot", "name", "type"),
-            Restaurant(1, "address", "parkinglot", "name", "type"),
-            Restaurant(2, "address", "parkinglot", "name", "type"),
-            Restaurant(3, "address", "parkinglot", "name", "type"),
-            Restaurant(4, "address", "parkinglot", "name", "type"),
-            Restaurant(5, "address", "parkinglot", "name", "type"),
-            Restaurant(6, "address", "parkinglot", "name", "type")
+            Restaurant(0, "address", "parkingLot", "name", "type"),
+            Restaurant(1, "address", "parkingLot", "name", "type"),
+            Restaurant(2, "address", "parkingLot", "name", "type"),
+            Restaurant(3, "address", "parkingLot", "name", "type"),
+            Restaurant(4, "address", "parkingLot", "name", "type"),
+            Restaurant(5, "address", "parkingLot", "name", "type"),
+            Restaurant(6, "address", "parkingLot", "name", "type")
         ),
         onNavigateToAllScreen = {},
         onNavigateToInfoScreen = {},

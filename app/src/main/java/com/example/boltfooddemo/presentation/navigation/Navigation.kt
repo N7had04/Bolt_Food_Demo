@@ -9,8 +9,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.example.boltfooddemo.data.utils.favRestaurantToRestaurant
 import com.example.boltfooddemo.data.utils.restaurantToFavRestaurant
+import com.example.boltfooddemo.presentation.ui.screens.AllScreen
 import com.example.boltfooddemo.presentation.ui.screens.CountryCodesScreen
+import com.example.boltfooddemo.presentation.ui.screens.InfoScreen
 import com.example.boltfooddemo.presentation.ui.screens.MainScreen
 import com.example.boltfooddemo.presentation.ui.screens.PasswordScreen
 import com.example.boltfooddemo.presentation.ui.screens.PhoneScreen
@@ -168,8 +172,37 @@ fun Navigation(
                     } else {
                         mainViewModel.saveFavRestaurant(restaurantToFavRestaurant(restaurant))
                     }
+                },
+                onNavigateToAllScreen = { text -> navController.navigate(Screens.AllScreen.route + "/$text") }
+            )
+        }
+        composable(Screens.AllScreen.route + "/{text}", arguments = listOf(
+            navArgument("text") {
+                type = androidx.navigation.NavType.StringType
+            }
+        )) {
+            val text = it.arguments?.getString("text") ?: ""
+
+            AllScreen(
+                restaurants = if (text == "Order Again") pastOrders.value else favRestaurants.value.map {
+                    favRestaurantToRestaurant(it)
+                },
+                text = text,
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToInfoScreen = {},
+                isFav = {restaurant -> favRestaurants.value.any { it.restaurantID == restaurant.restaurantID }},
+                onInsertOrDelete = { restaurant ->
+                    val favRestaurant = favRestaurants.value.firstOrNull { it.restaurantID == restaurant.restaurantID }
+                    if (favRestaurant != null) {
+                        mainViewModel.deleteFavRestaurant(favRestaurant)
+                    } else {
+                        mainViewModel.saveFavRestaurant(restaurantToFavRestaurant(restaurant))
+                    }
                 }
             )
+        }
+        composable(Screens.InfoScreen.route) {
+            InfoScreen()
         }
     }
 }
