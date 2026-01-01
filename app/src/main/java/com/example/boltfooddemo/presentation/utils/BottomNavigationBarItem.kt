@@ -5,7 +5,6 @@ import androidx.compose.material.icons.automirrored.filled.Notes
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Store
 import androidx.compose.ui.graphics.vector.ImageVector
 
 sealed class BottomNavigationBarItem(
@@ -14,7 +13,6 @@ sealed class BottomNavigationBarItem(
     val route: String
 ) {
     object Home : BottomNavigationBarItem("Home", Icons.Default.Home, Screens.HomeScreen.route)
-    object Store : BottomNavigationBarItem("Stores", Icons.Default.Store, Screens.StoreScreen.route)
     object Search : BottomNavigationBarItem("Search", Icons.Default.Search, Screens.SearchScreen.route)
     object Order : BottomNavigationBarItem("Orders", Icons.AutoMirrored.Filled.Notes, Screens.OrderScreen.route)
     object Account : BottomNavigationBarItem("Account", Icons.Default.AccountCircle, Screens.AccountScreen.route)

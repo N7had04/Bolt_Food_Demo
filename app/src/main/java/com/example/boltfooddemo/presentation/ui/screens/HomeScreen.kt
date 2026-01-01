@@ -40,6 +40,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -94,13 +95,14 @@ fun HomeScreen(
         ) {
             if (pastOrders.isNotEmpty()) {
                 item {
+                    val orderAgainText = stringResource(R.string.order_again)
                     Row(
-                        modifier = Modifier.fillMaxWidth().padding(16.dp).clickable { onNavigateToAllScreen("Order Again") },
+                        modifier = Modifier.fillMaxWidth().padding(16.dp).clickable { onNavigateToAllScreen(orderAgainText) },
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "Order Again",
+                            text = orderAgainText,
                             fontSize = 24.sp,
                             fontWeight = FontWeight.Bold
                         )
@@ -108,7 +110,7 @@ fun HomeScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                text = "All",
+                                text = stringResource(R.string.all),
                                 fontSize = 20.sp,
                                 fontWeight = FontWeight.Bold
                             )
@@ -161,7 +163,7 @@ fun HomeScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Explore all places",
+                        text = stringResource(R.string.explore_all_places),
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold
                     )

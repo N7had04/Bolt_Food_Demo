@@ -20,7 +20,6 @@ fun BottomNavigationBar(
 ) {
     val items = listOf(
         BottomNavigationBarItem.Home,
-        BottomNavigationBarItem.Store,
         BottomNavigationBarItem.Search,
         BottomNavigationBarItem.Order,
         BottomNavigationBarItem.Account

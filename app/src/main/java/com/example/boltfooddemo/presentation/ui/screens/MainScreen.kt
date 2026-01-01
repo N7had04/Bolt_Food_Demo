@@ -21,7 +21,8 @@ fun MainScreen(
     pastOrders: List<Restaurant>,
     restaurants: List<Restaurant>,
     onInsertOrDelete: (Restaurant) -> Unit,
-    onNavigateToAllScreen: (String) -> Unit
+    onNavigateToAllScreen: (String) -> Unit,
+    onNavigateToInfoScreen: (Restaurant) -> Unit
 ) {
     val navController = rememberNavController()
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
@@ -52,12 +53,9 @@ fun MainScreen(
                     restaurants = restaurants,
                     isFav = isFav,
                     onNavigateToAllScreen = {onNavigateToAllScreen(it)},
-                    onNavigateToInfoScreen = {},
+                    onNavigateToInfoScreen = {onNavigateToInfoScreen(it)},
                     onInsertOrDelete = {onInsertOrDelete(it)}
                 )
-            }
-            composable(Screens.StoreScreen.route) {
-                StoreScreen()
             }
             composable(Screens.SearchScreen.route) {
                 SearchScreen()
@@ -80,6 +78,7 @@ fun MainScreenPreview() {
         pastOrders = emptyList(),
         restaurants = emptyList(),
         onInsertOrDelete = {},
-        onNavigateToAllScreen = {}
+        onNavigateToAllScreen = {},
+        onNavigateToInfoScreen = {}
     )
 }
