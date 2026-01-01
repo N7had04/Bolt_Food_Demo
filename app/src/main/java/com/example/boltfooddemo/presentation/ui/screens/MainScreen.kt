@@ -11,27 +11,36 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.boltfooddemo.data.model.Restaurant
+import com.example.boltfooddemo.presentation.ui.components.BottomNavigationBar
 import com.example.boltfooddemo.presentation.utils.Screens
 
 @Composable
 fun MainScreen(
     modifier: Modifier = Modifier,
+    isFav: (Restaurant) -> Boolean,
     pastOrders: List<Restaurant>,
-    restaurants: List<Restaurant>
+    restaurants: List<Restaurant>,
+    onInsertOrDelete: (Restaurant) -> Unit,
+    onNavigateToAllScreen: (String) -> Unit,
+    onNavigateToInfoScreen: (Restaurant) -> Unit
 ) {
     val navController = rememberNavController()
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
-        bottomBar = { BottomNavigationBar(
-            isSelected = { currentRoute == it },
-            onNavigate = { navController.navigate(it) {
-                popUpTo(currentRoute.toString()) {
-                    inclusive = true
+        bottomBar = {
+            BottomNavigationBar(
+                isSelected = { currentRoute == it },
+                onNavigate = {
+                    navController.navigate(it) {
+                        popUpTo(currentRoute.toString()) {
+                            inclusive = true
+                        }
+                    }
                 }
-            } }
-        ) }
+            )
+        }
     ) { padding ->
         NavHost(
             navController = navController,
@@ -42,12 +51,11 @@ fun MainScreen(
                 HomeScreen(
                     pastOrders = pastOrders,
                     restaurants = restaurants,
-                    onNavigateToAllScreen = {},
-                    onNavigateToInfoScreen = {}
+                    isFav = isFav,
+                    onNavigateToAllScreen = {onNavigateToAllScreen(it)},
+                    onNavigateToInfoScreen = {onNavigateToInfoScreen(it)},
+                    onInsertOrDelete = {onInsertOrDelete(it)}
                 )
-            }
-            composable(Screens.StoreScreen.route) {
-                StoreScreen()
             }
             composable(Screens.SearchScreen.route) {
                 SearchScreen()
@@ -66,7 +74,11 @@ fun MainScreen(
 @Composable
 fun MainScreenPreview() {
     MainScreen(
+        isFav = {true},
         pastOrders = emptyList(),
-        restaurants = emptyList()
+        restaurants = emptyList(),
+        onInsertOrDelete = {},
+        onNavigateToAllScreen = {},
+        onNavigateToInfoScreen = {}
     )
 }

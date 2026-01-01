@@ -5,11 +5,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.example.boltfooddemo.R
+import com.example.boltfooddemo.data.model.Restaurant
+import com.example.boltfooddemo.data.utils.favRestaurantToRestaurant
+import com.example.boltfooddemo.data.utils.restaurantToFavRestaurant
+import com.example.boltfooddemo.presentation.ui.screens.AllScreen
 import com.example.boltfooddemo.presentation.ui.screens.CountryCodesScreen
+import com.example.boltfooddemo.presentation.ui.screens.InfoScreen
 import com.example.boltfooddemo.presentation.ui.screens.MainScreen
 import com.example.boltfooddemo.presentation.ui.screens.PasswordScreen
 import com.example.boltfooddemo.presentation.ui.screens.PhoneScreen
@@ -157,8 +165,68 @@ fun Navigation(
                 mainViewModel.getAllRestaurants()
             }
             MainScreen(
+                isFav = {restaurant -> favRestaurants.value.any { it.restaurantID == restaurant.restaurantID }},
                 pastOrders = pastOrders.value,
-                restaurants = restaurants.value
+                restaurants = restaurants.value,
+                onInsertOrDelete = {restaurant ->
+                    val favRestaurant = favRestaurants.value.firstOrNull { it.restaurantID == restaurant.restaurantID }
+                    if (favRestaurant != null) {
+                        mainViewModel.deleteFavRestaurant(favRestaurant)
+                    } else {
+                        mainViewModel.saveFavRestaurant(restaurantToFavRestaurant(restaurant))
+                    }
+                },
+                onNavigateToAllScreen = { text -> navController.navigate(Screens.AllScreen.route + "/$text") },
+                onNavigateToInfoScreen = {
+                    navController.currentBackStackEntry?.savedStateHandle?.set("restaurant", it)
+                    navController.navigate(Screens.InfoScreen.route)
+                }
+            )
+        }
+        composable(Screens.AllScreen.route + "/{text}", arguments = listOf(
+            navArgument("text") {
+                type = androidx.navigation.NavType.StringType
+            }
+        )) {
+            val text = it.arguments?.getString("text") ?: ""
+
+            AllScreen(
+                restaurants = if (text == stringResource(R.string.order_again)) pastOrders.value else favRestaurants.value.map { restaurant ->
+                    favRestaurantToRestaurant(restaurant)
+                },
+                text = text,
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToInfoScreen = {},
+                isFav = {restaurant -> favRestaurants.value.any { favRestaurant ->
+                    favRestaurant.restaurantID == restaurant.restaurantID
+                } },
+                onInsertOrDelete = { restaurant ->
+                    val favRestaurant = favRestaurants.value.firstOrNull { favRestaurant ->
+                        favRestaurant.restaurantID == restaurant.restaurantID
+                    }
+                    if (favRestaurant != null) {
+                        mainViewModel.deleteFavRestaurant(favRestaurant)
+                    } else {
+                        mainViewModel.saveFavRestaurant(restaurantToFavRestaurant(restaurant))
+                    }
+                }
+            )
+        }
+        composable(Screens.InfoScreen.route) {
+            val restaurant = navController.previousBackStackEntry?.savedStateHandle?.get<Restaurant>("restaurant") ?: Restaurant(0, "", "", "", "")
+
+            InfoScreen(
+                restaurant = restaurant,
+                isFav = favRestaurants.value.any { it.restaurantID == restaurant.restaurantID },
+                onInsertOrDelete = {
+                    val favRestaurant = favRestaurants.value.firstOrNull { it.restaurantID == restaurant.restaurantID }
+                    if (favRestaurant != null) {
+                        mainViewModel.deleteFavRestaurant(favRestaurant)
+                    } else {
+                        mainViewModel.saveFavRestaurant(restaurantToFavRestaurant(restaurant))
+                    }
+                },
+                onNavigateBack = { navController.popBackStack() }
             )
         }
     }

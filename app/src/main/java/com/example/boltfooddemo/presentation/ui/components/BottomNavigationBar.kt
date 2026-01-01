@@ -1,4 +1,4 @@
-package com.example.boltfooddemo.presentation.ui.screens
+package com.example.boltfooddemo.presentation.ui.components
 
 import androidx.compose.foundation.border
 import androidx.compose.material3.Icon
@@ -20,7 +20,6 @@ fun BottomNavigationBar(
 ) {
     val items = listOf(
         BottomNavigationBarItem.Home,
-        BottomNavigationBarItem.Store,
         BottomNavigationBarItem.Search,
         BottomNavigationBarItem.Order,
         BottomNavigationBarItem.Account
