@@ -5,7 +5,9 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -14,45 +16,71 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.example.boltfooddemo.R
+import com.example.boltfooddemo.data.model.MenuItem
 import com.example.boltfooddemo.data.model.Restaurant
 import com.example.boltfooddemo.presentation.ui.theme.Green217
+import com.example.boltfooddemo.presentation.ui.theme.LightGray
+import kotlinx.coroutines.launch
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InfoScreen(
     restaurant: Restaurant,
+    menu: List<MenuItem>,
     modifier: Modifier = Modifier,
     isFav: Boolean,
     onInsertOrDelete: () -> Unit,
     onNavigateBack: () -> Unit,
 ) {
+    val sheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true
+    )
+    val scope = rememberCoroutineScope()
+    val showSheet = remember { mutableStateOf(false) }
+
     val listState = rememberLazyListState()
     val isAtTop by remember {
         derivedStateOf {
@@ -66,6 +94,91 @@ fun InfoScreen(
     )
 
     val restaurantNameText = if (isAtTop) "" else restaurant.restaurantName
+
+    val mI = remember { mutableStateOf(MenuItem(0, "", "", "", 0.0, 0, "")) }
+
+    if (showSheet.value) {
+        ModalBottomSheet(
+            onDismissRequest = {showSheet.value = false},
+            sheetState = sheetState
+        ) {
+            Column(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(250.dp)
+                ) {
+                    AsyncImage(
+                        model = mI.value.imageUrl,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+
+                    Box(
+                        modifier = Modifier
+                            .padding(top = 16.dp, end = 16.dp)
+                            .size(40.dp)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.background)
+                            .clickable {
+                                scope.launch {
+                                    sheetState.hide()
+                                    showSheet.value = false
+                                }
+                            }
+                            .align(Alignment.TopEnd),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = null,
+                        )
+                    }
+                }
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                ) {
+                    Text(
+                        text = mI.value.itemName,
+                        color = Color.Black,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 20.sp,
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(
+                        text = "$ ${mI.value.itemPrice}",
+                        color = Color.Black,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 24.sp,
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(
+                        text = mI.value.itemDescription,
+                        color = Color.Gray,
+                        fontSize = 16.sp
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    HorizontalDivider(
+                        color = LightGray,
+                        thickness = 2.dp
+                    )
+                }
+            }
+        }
+    }
 
     Box(
         modifier = modifier.fillMaxSize()
@@ -120,13 +233,90 @@ fun InfoScreen(
                 }
             }
 
-            items(20) {
+            item {
+                HorizontalDivider(
+                    color = LightGray,
+                    thickness = 16.dp
+                )
+            }
+
+            item {
                 Text(
-                    text = "Item $it",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
+                    text = "Menu",
+                    color = Color.Black,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.ExtraBold,
                     modifier = Modifier.padding(16.dp)
                 )
+            }
+
+            items(menu) { menuItem ->
+                Column {
+                    Card(
+                        shape = RectangleShape,
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.background
+                        ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                            .clickable {
+                                mI.value = menuItem
+                                showSheet.value = true
+                            }
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Column(
+                                modifier = Modifier.height(120.dp).width(200.dp)
+                            ) {
+                                Text(
+                                    text = menuItem.itemName,
+                                    color = Color.Black,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+
+                                Spacer(modifier = Modifier.height(8.dp))
+
+                                Text(
+                                    text = menuItem.itemDescription,
+                                    color = Color.Gray,
+                                    fontSize = 14.sp,
+                                    maxLines = 2,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+
+                                Spacer(modifier = Modifier.height(8.dp))
+
+                                Text(
+                                    text = "$ ${menuItem.itemPrice}",
+                                    color = Color.Black,
+                                    fontSize = 16.sp,
+                                )
+                            }
+
+                            AsyncImage(
+                                model = menuItem.imageUrl,
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .size(120.dp)
+                                    .aspectRatio(1f)
+                                    .clip(RoundedCornerShape(12.dp)),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+                    }
+
+                    HorizontalDivider(
+                        color = LightGray,
+                        thickness = 2.dp
+                    )
+                }
             }
         }
 
@@ -207,6 +397,13 @@ fun InfoScreen(
 fun InfoScreenPreview() {
     InfoScreen(
         restaurant = Restaurant(0, "address", "parkingLot", "Restaurant Name", "type"),
+        menu = listOf(
+            MenuItem(0, "imageUrl", "itemDescription", "itemName", 10.0, 0, "restaurantName"),
+            MenuItem(1, "imageUrl", "itemDescription", "itemName", 10.0, 0, "restaurantName"),
+            MenuItem(2, "imageUrl", "itemDescription", "itemName", 10.0, 0, "restaurantName"),
+            MenuItem(3, "imageUrl", "itemDescription", "itemName", 10.0, 0, "restaurantName"),
+            MenuItem(4, "imageUrl", "itemDescription", "itemName", 10.0, 0, "restaurantName")
+        ),
         isFav = true,
         onInsertOrDelete = {},
         onNavigateBack = {}
