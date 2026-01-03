@@ -214,9 +214,14 @@ fun Navigation(
         }
         composable(Screens.InfoScreen.route) {
             val restaurant = navController.previousBackStackEntry?.savedStateHandle?.get<Restaurant>("restaurant") ?: Restaurant(0, "", "", "", "")
+            LaunchedEffect(Unit) {
+                mainViewModel.getMenu(restaurant.restaurantID)
+            }
+            val menu = mainViewModel.menu.collectAsState()
 
             InfoScreen(
                 restaurant = restaurant,
+                menu = menu.value,
                 isFav = favRestaurants.value.any { it.restaurantID == restaurant.restaurantID },
                 onInsertOrDelete = {
                     val favRestaurant = favRestaurants.value.firstOrNull { it.restaurantID == restaurant.restaurantID }
