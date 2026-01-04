@@ -4,6 +4,7 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,10 +26,14 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -175,6 +180,81 @@ fun InfoScreen(
                         color = LightGray,
                         thickness = 2.dp
                     )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .height(60.dp)
+                                .weight(0.35f)
+                                .clip(RoundedCornerShape(32.dp))
+                                .border(
+                                    width = 2.dp,
+                                    color = LightGray,
+                                    shape = RoundedCornerShape(32.dp)
+                                ),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceEvenly
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Add,
+                                contentDescription = null,
+                                modifier = Modifier.clickable {
+
+                                }
+                            )
+
+                            Text(
+                                text = "1",
+                                color = Color.Black,
+                                fontSize = 24.sp
+                            )
+
+                            Icon(
+                                imageVector = Icons.Default.Remove,
+                                contentDescription = null,
+                                modifier = Modifier.clickable {
+
+                                }
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.weight(0.1f))
+
+                        Button(
+                            onClick = { /*TODO*/ },
+                            modifier = Modifier
+                                .height(60.dp)
+                                .weight(0.55f)
+                                .clip(RoundedCornerShape(32.dp)),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Green217
+                            )
+                        ) {
+                            Column(
+                                modifier = Modifier.fillMaxSize(),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text(
+                                    text = "Add",
+                                    color = Color.White,
+                                    fontSize = 16.sp
+                                )
+
+                                Spacer(modifier = Modifier.height(4.dp))
+
+                                Text(
+                                    text = "$ ${mI.value.itemPrice}",
+                                    color = Color.White,
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -300,15 +380,37 @@ fun InfoScreen(
                                 )
                             }
 
-                            AsyncImage(
-                                model = menuItem.imageUrl,
-                                contentDescription = null,
+                            Box(
                                 modifier = Modifier
                                     .size(120.dp)
                                     .aspectRatio(1f)
-                                    .clip(RoundedCornerShape(12.dp)),
-                                contentScale = ContentScale.Crop
-                            )
+                                    .clip(RoundedCornerShape(12.dp))
+                            ) {
+                                AsyncImage(
+                                    model = menuItem.imageUrl,
+                                    contentDescription = null,
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentScale = ContentScale.Crop
+                                )
+
+                                Box(
+                                    modifier = Modifier
+                                        .padding(bottom = 4.dp, end = 4.dp)
+                                        .size(40.dp)
+                                        .clip(CircleShape)
+                                        .background(MaterialTheme.colorScheme.background)
+                                        .clickable {
+
+                                        }
+                                        .align(Alignment.BottomEnd),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Add,
+                                        contentDescription = null,
+                                    )
+                                }
+                            }
                         }
                     }
 
