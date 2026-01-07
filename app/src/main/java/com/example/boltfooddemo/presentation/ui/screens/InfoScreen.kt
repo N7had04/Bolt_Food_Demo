@@ -20,7 +20,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -39,6 +39,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
@@ -46,9 +47,11 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -101,6 +104,9 @@ fun InfoScreen(
     val restaurantNameText = if (isAtTop) "" else restaurant.restaurantName
 
     val mI = remember { mutableStateOf(MenuItem(0, "", "", "", 0.0, 0, "")) }
+    val countsOfMI = remember(menu.size) { List(menu.size) { 1 }.toMutableStateList() }
+    val ind = remember { mutableIntStateOf(0) }
+    val totalCost = remember { mutableStateOf(0.0) }
 
     if (showSheet.value) {
         ModalBottomSheet(
@@ -200,33 +206,47 @@ fun InfoScreen(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceEvenly
                         ) {
-                            Icon(
-                                imageVector = Icons.Default.Add,
-                                contentDescription = null,
-                                modifier = Modifier.clickable {
-
-                                }
-                            )
+                            IconButton(
+                                onClick = {
+                                    countsOfMI[ind.intValue] -= 1
+                                },
+                                enabled = countsOfMI[ind.intValue] > 1
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Remove,
+                                    contentDescription = null
+                                )
+                            }
 
                             Text(
-                                text = "1",
+                                text = "${countsOfMI[ind.intValue]}",
                                 color = Color.Black,
                                 fontSize = 24.sp
                             )
 
-                            Icon(
-                                imageVector = Icons.Default.Remove,
-                                contentDescription = null,
-                                modifier = Modifier.clickable {
-
-                                }
-                            )
+                            IconButton(
+                                onClick = {
+                                    countsOfMI[ind.intValue] += 1
+                                },
+                                enabled = true
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Add,
+                                    contentDescription = null,
+                                )
+                            }
                         }
 
                         Spacer(modifier = Modifier.weight(0.1f))
 
                         Button(
-                            onClick = { /*TODO*/ },
+                            onClick = {
+                                scope.launch {
+                                    sheetState.hide()
+                                    showSheet.value = false
+                                }
+                                totalCost.value += countsOfMI[ind.intValue] * mI.value.itemPrice
+                            },
                             modifier = Modifier
                                 .height(60.dp)
                                 .weight(0.55f)
@@ -249,7 +269,7 @@ fun InfoScreen(
                                 Spacer(modifier = Modifier.height(4.dp))
 
                                 Text(
-                                    text = "$ ${mI.value.itemPrice}",
+                                    text = "$ ${countsOfMI[ind.intValue] * mI.value.itemPrice}",
                                     color = Color.White,
                                 )
                             }
@@ -330,8 +350,10 @@ fun InfoScreen(
                 )
             }
 
-            items(menu) { menuItem ->
-                Column {
+            itemsIndexed(menu) { i, menuItem ->
+                Column(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
                     Card(
                         shape = RectangleShape,
                         colors = CardDefaults.cardColors(
@@ -342,6 +364,7 @@ fun InfoScreen(
                             .padding(16.dp)
                             .clickable {
                                 mI.value = menuItem
+                                ind.intValue = i
                                 showSheet.value = true
                             }
                     ) {
@@ -380,37 +403,15 @@ fun InfoScreen(
                                 )
                             }
 
-                            Box(
+                            AsyncImage(
+                                model = menuItem.imageUrl,
+                                contentDescription = null,
+                                contentScale = ContentScale.Crop,
                                 modifier = Modifier
                                     .size(120.dp)
                                     .aspectRatio(1f)
                                     .clip(RoundedCornerShape(12.dp))
-                            ) {
-                                AsyncImage(
-                                    model = menuItem.imageUrl,
-                                    contentDescription = null,
-                                    modifier = Modifier.fillMaxSize(),
-                                    contentScale = ContentScale.Crop
-                                )
-
-                                Box(
-                                    modifier = Modifier
-                                        .padding(bottom = 4.dp, end = 4.dp)
-                                        .size(40.dp)
-                                        .clip(CircleShape)
-                                        .background(MaterialTheme.colorScheme.background)
-                                        .clickable {
-
-                                        }
-                                        .align(Alignment.BottomEnd),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.Add,
-                                        contentDescription = null,
-                                    )
-                                }
-                            }
+                            )
                         }
                     }
 
@@ -489,6 +490,34 @@ fun InfoScreen(
                     imageVector = Icons.Default.Search,
                     contentDescription = null
                 )
+            }
+        }
+
+        if (totalCost.value > 0.0) {
+            Row(
+                modifier = Modifier
+                    .padding(bottom = 30.dp, end = 16.dp, start = 16.dp)
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Button(
+                    onClick = {
+
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(60.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Green217
+                    )
+                ) {
+                    Text(
+                        text = "View Basket $ ${totalCost.value}",
+                        color = Color.White,
+                        fontSize = 20.sp
+                    )
+                }
             }
         }
     }
