@@ -20,6 +20,7 @@ import com.example.boltfooddemo.presentation.ui.screens.CountryCodesScreen
 import com.example.boltfooddemo.presentation.ui.screens.InfoScreen
 import com.example.boltfooddemo.presentation.ui.screens.MainScreen
 import com.example.boltfooddemo.presentation.ui.screens.PasswordScreen
+import com.example.boltfooddemo.presentation.ui.screens.PaymentScreen
 import com.example.boltfooddemo.presentation.ui.screens.PhoneScreen
 import com.example.boltfooddemo.presentation.ui.screens.RegistrationScreen
 import com.example.boltfooddemo.presentation.ui.screens.SplashScreen
@@ -75,6 +76,7 @@ fun Navigation(
                 }
             )
         }
+
         composable(Screens.PhoneScreen.route) {
             PhoneScreen(
                 selectedCountryCode = selectedCountryCode.value,
@@ -88,6 +90,7 @@ fun Navigation(
                 }
             )
         }
+
         composable(Screens.PasswordScreen.route) {
             LaunchedEffect(phone) {
                 authViewModel.getUser(phone)
@@ -115,6 +118,7 @@ fun Navigation(
                 }
             )
         }
+
         composable(Screens.CountryCodesScreen.route) {
             val countryCodes = mainViewModel.loadCountryCodes()
             CountryCodesScreen(
@@ -128,6 +132,7 @@ fun Navigation(
                 }
             )
         }
+
         composable(Screens.RegistrationScreen.route) {
             RegistrationScreen(
                 name = nameText.value,
@@ -160,6 +165,7 @@ fun Navigation(
                 }
             )
         }
+
         composable(Screens.MainScreen.route) {
             LaunchedEffect(Unit) {
                 mainViewModel.getAllRestaurants()
@@ -183,6 +189,7 @@ fun Navigation(
                 }
             )
         }
+
         composable(Screens.AllScreen.route + "/{text}", arguments = listOf(
             navArgument("text") {
                 type = androidx.navigation.NavType.StringType
@@ -212,6 +219,7 @@ fun Navigation(
                 }
             )
         }
+
         composable(Screens.InfoScreen.route) {
             val restaurant = navController.previousBackStackEntry?.savedStateHandle?.get<Restaurant>("restaurant") ?: Restaurant(0, "", "", "", "")
             LaunchedEffect(Unit) {
@@ -231,7 +239,31 @@ fun Navigation(
                         mainViewModel.saveFavRestaurant(restaurantToFavRestaurant(restaurant))
                     }
                 },
-                onNavigateBack = { navController.popBackStack() }
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToPaymentScreen = { restaurant, totalCost ->
+                    navController.currentBackStackEntry?.savedStateHandle?.set("restaurant", restaurant)
+                    navController.navigate(Screens.PaymentScreen.route + "/$totalCost") {
+                        popUpTo(Screens.InfoScreen.route) {
+                            inclusive = true
+                        }
+                    }
+                }
+            )
+        }
+
+        composable(Screens.PaymentScreen.route + "/{totalCost}", arguments = listOf(
+            navArgument("totalCost") {
+                type = androidx.navigation.NavType.StringType
+            })
+        ) { backStackEntry ->
+            val restaurant = navController.previousBackStackEntry?.savedStateHandle?.get<Restaurant>("restaurant") ?: Restaurant(0, "", "", "", "")
+            val totalCost = backStackEntry.arguments?.getString("totalCost") ?: ""
+
+            PaymentScreen(
+                totalCost = totalCost,
+                restaurant = restaurant,
+                onNavigateBack = { navController.popBackStack() },
+                saveOrder = { mainViewModel.saveRestaurant(restaurant) }
             )
         }
     }
