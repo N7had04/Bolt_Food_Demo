@@ -32,6 +32,7 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -43,10 +44,12 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -82,12 +85,14 @@ fun InfoScreen(
     isFav: Boolean,
     onInsertOrDelete: () -> Unit,
     onNavigateBack: () -> Unit,
+    onNavigateToPaymentScreen: (Restaurant, String) -> Unit
 ) {
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true
     )
     val scope = rememberCoroutineScope()
     val showSheet = remember { mutableStateOf(false) }
+    val showDialog = remember { mutableStateOf(false) }
 
     val listState = rememberLazyListState()
     val isAtTop by remember {
@@ -106,7 +111,7 @@ fun InfoScreen(
     val mI = remember { mutableStateOf(MenuItem(0, "", "", "", 0.0, 0, "")) }
     val countsOfMI = remember(menu.size) { List(menu.size) { 1 }.toMutableStateList() }
     val ind = remember { mutableIntStateOf(0) }
-    val totalCost = remember { mutableStateOf(0.0) }
+    val totalCost = remember { mutableDoubleStateOf(0.0) }
 
     if (showSheet.value) {
         ModalBottomSheet(
@@ -245,7 +250,7 @@ fun InfoScreen(
                                     sheetState.hide()
                                     showSheet.value = false
                                 }
-                                totalCost.value += countsOfMI[ind.intValue] * mI.value.itemPrice
+                                totalCost.doubleValue += countsOfMI[ind.intValue] * mI.value.itemPrice
                             },
                             modifier = Modifier
                                 .height(60.dp)
@@ -278,6 +283,43 @@ fun InfoScreen(
                 }
             }
         }
+    }
+
+    if (showDialog.value) {
+        AlertDialog(
+            onDismissRequest = {showDialog.value = false},
+            title = {
+                Text(
+                    text = "Empty basket",
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp
+                )
+            },
+            text = {
+                Text(
+                    text = "Are you sure you want to delete all the items in your basket?",
+                    color = Color.Black,
+                    fontSize = 16.sp
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = {onNavigateBack()}) {
+                    Text(
+                        text = "EMPTY BASKET",
+                        color = Green217
+                    )
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = {showDialog.value = false}) {
+                    Text(
+                        text = "CANCEL",
+                        color = Green217
+                    )
+                }
+            }
+        )
     }
 
     Box(
@@ -437,7 +479,13 @@ fun InfoScreen(
                     .weight(1f)
                     .clip(CircleShape)
                     .background(MaterialTheme.colorScheme.background)
-                    .clickable { onNavigateBack() },
+                    .clickable {
+                        if (totalCost.doubleValue > 0.0) {
+                            showDialog.value = true
+                        } else {
+                            onNavigateBack()
+                        }
+                    },
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
@@ -493,7 +541,7 @@ fun InfoScreen(
             }
         }
 
-        if (totalCost.value > 0.0) {
+        if (totalCost.doubleValue > 0.0) {
             Row(
                 modifier = Modifier
                     .padding(bottom = 30.dp, end = 16.dp, start = 16.dp)
@@ -503,7 +551,7 @@ fun InfoScreen(
             ) {
                 Button(
                     onClick = {
-
+                        onNavigateToPaymentScreen(restaurant, totalCost.doubleValue.toString())
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -513,7 +561,7 @@ fun InfoScreen(
                     )
                 ) {
                     Text(
-                        text = "View Basket $ ${totalCost.value}",
+                        text = "View Basket $ ${totalCost.doubleValue}",
                         color = Color.White,
                         fontSize = 20.sp
                     )
@@ -537,6 +585,9 @@ fun InfoScreenPreview() {
         ),
         isFav = true,
         onInsertOrDelete = {},
-        onNavigateBack = {}
+        onNavigateBack = {},
+        onNavigateToPaymentScreen = {
+            _, _ ->
+        }
     )
 }
