@@ -194,7 +194,7 @@ fun Navigation(
             navArgument("text") {
                 type = androidx.navigation.NavType.StringType
             }
-        )) {
+        )) { it ->
             val text = it.arguments?.getString("text") ?: ""
 
             AllScreen(
@@ -203,7 +203,10 @@ fun Navigation(
                 },
                 text = text,
                 onNavigateBack = { navController.popBackStack() },
-                onNavigateToInfoScreen = {},
+                onNavigateToInfoScreen = {
+                    navController.currentBackStackEntry?.savedStateHandle?.set("restaurant", it)
+                    navController.navigate(Screens.InfoScreen.route)
+                },
                 isFav = {restaurant -> favRestaurants.value.any { favRestaurant ->
                     favRestaurant.restaurantID == restaurant.restaurantID
                 } },

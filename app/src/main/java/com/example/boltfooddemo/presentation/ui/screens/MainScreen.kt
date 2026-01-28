@@ -61,7 +61,10 @@ fun MainScreen(
                 SearchScreen()
             }
             composable(Screens.OrderScreen.route) {
-                OrderScreen()
+                OrderScreen(
+                    pastOrders = pastOrders,
+                    onNavigateToInfoScreen = {onNavigateToInfoScreen(it)}
+                )
             }
             composable(Screens.AccountScreen.route) {
                 AccountScreen()
