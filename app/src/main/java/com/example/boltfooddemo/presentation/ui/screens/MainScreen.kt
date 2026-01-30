@@ -21,6 +21,8 @@ fun MainScreen(
     pastOrders: List<Restaurant>,
     restaurants: List<Restaurant>,
     onInsertOrDelete: (Restaurant) -> Unit,
+    searchMenuText: String,
+    onValueChange: (String) -> Unit,
     onNavigateToAllScreen: (String) -> Unit,
     onNavigateToInfoScreen: (Restaurant) -> Unit
 ) {
@@ -54,11 +56,20 @@ fun MainScreen(
                     isFav = isFav,
                     onNavigateToAllScreen = {onNavigateToAllScreen(it)},
                     onNavigateToInfoScreen = {onNavigateToInfoScreen(it)},
+                    onNavigateToSearchScreen = {navController.navigate(Screens.SearchScreen.route)},
                     onInsertOrDelete = {onInsertOrDelete(it)}
                 )
             }
             composable(Screens.SearchScreen.route) {
-                SearchScreen()
+                SearchScreen(
+                    restaurants = restaurants,
+                    isFav = isFav,
+                    onInsertOrDelete = {onInsertOrDelete(it)},
+                    onNavigateBack = {navController.navigate(Screens.HomeScreen.route)},
+                    onNavigateToInfoScreen = {onNavigateToInfoScreen(it)},
+                    searchMenuText = searchMenuText,
+                    onValueChange = {onValueChange(it)}
+                )
             }
             composable(Screens.OrderScreen.route) {
                 OrderScreen(
@@ -81,6 +92,8 @@ fun MainScreenPreview() {
         pastOrders = emptyList(),
         restaurants = emptyList(),
         onInsertOrDelete = {},
+        searchMenuText = "",
+        onValueChange = {},
         onNavigateToAllScreen = {},
         onNavigateToInfoScreen = {}
     )
