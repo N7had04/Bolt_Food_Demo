@@ -1,6 +1,8 @@
 package com.example.boltfooddemo.presentation.ui.screens
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -24,6 +26,8 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
@@ -43,6 +47,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -54,6 +60,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -61,8 +68,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -83,6 +93,8 @@ fun InfoScreen(
     menu: List<MenuItem>,
     modifier: Modifier = Modifier,
     isFav: Boolean,
+    searchText: String,
+    onValueChange: (String) -> Unit,
     onInsertOrDelete: () -> Unit,
     onNavigateBack: () -> Unit,
     onNavigateToPaymentScreen: (Restaurant, String) -> Unit
@@ -112,6 +124,19 @@ fun InfoScreen(
     val countsOfMI = remember(menu.size) { List(menu.size) { 1 }.toMutableStateList() }
     val ind = remember { mutableIntStateOf(0) }
     val totalCost = remember { mutableDoubleStateOf(0.0) }
+
+    var isFocused by remember { mutableStateOf(true) }
+    val focusManager = LocalFocusManager.current
+    val searchTextFieldWeight by animateFloatAsState(
+        targetValue = if (isFocused) 0.8f else 1f,
+        animationSpec = tween(durationMillis = 500)
+    )
+    val textButtonWeight by animateFloatAsState(
+        targetValue = if (isFocused) 0.2f else 0.0001f,
+        animationSpec = tween(durationMillis = 500)
+    )
+    var menuList by remember(menu) { mutableStateOf(menu) }
+    var showSearchMenu by remember { mutableStateOf(false) }
 
     if (showSheet.value) {
         ModalBottomSheet(
@@ -392,7 +417,7 @@ fun InfoScreen(
                 )
             }
 
-            itemsIndexed(menu) { i, menuItem ->
+            itemsIndexed(if (showSearchMenu) menuList else menu) { i, menuItem ->
                 Column(
                     modifier = Modifier.fillMaxWidth()
                 ) {
@@ -465,79 +490,139 @@ fun InfoScreen(
             }
         }
 
-        Row(
-            modifier = Modifier
-                .background(bgColor)
-                .padding(top = 30.dp, end = 16.dp, start = 16.dp)
-                .fillMaxWidth()
-                .align(Alignment.TopCenter),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Box(
-                modifier = Modifier
-                    .aspectRatio(1f)
-                    .weight(1f)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.background)
-                    .clickable {
-                        if (totalCost.doubleValue > 0.0) {
-                            showDialog.value = true
-                        } else {
-                            onNavigateBack()
+        if (showSearchMenu) {
+            Row(
+                modifier = Modifier.background(Color.White).padding(top = 30.dp, bottom = 8.dp, start = 20.dp, end = 20.dp).fillMaxWidth().height(60.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                OutlinedTextField(
+                    value = searchText,
+                    onValueChange = { it ->
+                        onValueChange(it)
+                        menuList = menu.filter { it.itemName.contains(searchText, ignoreCase = true) ||
+                                it.itemDescription.contains(searchText, ignoreCase = true) } },
+                    placeholder = { Text("Search") },
+                    leadingIcon = {
+                        Icon(imageVector = Icons.Default.Search, contentDescription = null)
+                    },
+                    trailingIcon = {
+                        if (searchText.isNotEmpty()) {
+                            IconButton(onClick = {
+                                onValueChange("")
+                                menuList = menu.filter { it.itemName.contains(searchText, ignoreCase = true) ||
+                                        it.itemDescription.contains(searchText, ignoreCase = true) }
+                            }) {
+                                Icon(imageVector = Icons.Default.Close, contentDescription = null)
+                            }
                         }
                     },
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = null
+                    singleLine = true,
+                    shape = RoundedCornerShape(10.dp),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Search),
+                    keyboardActions = KeyboardActions(
+                        onSearch = {
+                            focusManager.clearFocus()
+                        }
+                    ),
+                    modifier = Modifier.weight(searchTextFieldWeight).animateContentSize(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Green217,
+                        unfocusedBorderColor = Color.Transparent,
+                        focusedContainerColor = Color.White,
+                        unfocusedContainerColor = LightGray,
+                        cursorColor = Green217
+                    )
                 )
+                TextButton(
+                    onClick = {
+                        focusManager.clearFocus()
+                        showSearchMenu = false
+                    },
+                    modifier = Modifier.weight(textButtonWeight).animateContentSize()
+                ) {
+                    Text(
+                        text = "Cancel",
+                        fontSize = 16.sp,
+                        color = Color.Black
+                    )
+                }
             }
-
-            Spacer(modifier = Modifier.weight(0.25f))
-
-            Text(
-                text = restaurantNameText,
-                color = Color.Black,
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.weight(4f)
-            )
-
-            Spacer(modifier = Modifier.weight(0.25f))
-
-            Box(
+        } else {
+            Row(
                 modifier = Modifier
-                    .aspectRatio(1f)
-                    .weight(1f)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.background)
-                    .clickable { onInsertOrDelete() },
-                contentAlignment = Alignment.Center
+                    .background(bgColor)
+                    .padding(top = 30.dp, end = 16.dp, start = 16.dp)
+                    .fillMaxWidth()
+                    .align(Alignment.TopCenter),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    imageVector = if (isFav) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                    tint = if (isFav) Color.Red else Color.Black,
-                    contentDescription = null
-                )
-            }
+                Box(
+                    modifier = Modifier
+                        .aspectRatio(1f)
+                        .weight(1f)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.background)
+                        .clickable {
+                            if (totalCost.doubleValue > 0.0) {
+                                showDialog.value = true
+                            } else {
+                                onNavigateBack()
+                            }
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = null
+                    )
+                }
 
-            Spacer(modifier = Modifier.weight(0.25f))
+                Spacer(modifier = Modifier.weight(0.25f))
 
-            Box(
-                modifier = Modifier
-                    .aspectRatio(1f)
-                    .weight(1f)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.background),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Search,
-                    contentDescription = null
+                Text(
+                    text = restaurantNameText,
+                    color = Color.Black,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(4f)
                 )
+
+                Spacer(modifier = Modifier.weight(0.25f))
+
+                Box(
+                    modifier = Modifier
+                        .aspectRatio(1f)
+                        .weight(1f)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.background)
+                        .clickable { onInsertOrDelete() },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = if (isFav) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                        tint = if (isFav) Color.Red else Color.Black,
+                        contentDescription = null
+                    )
+                }
+
+                Spacer(modifier = Modifier.weight(0.25f))
+
+                Box(
+                    modifier = Modifier
+                        .aspectRatio(1f)
+                        .weight(1f)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.background)
+                        .clickable { showSearchMenu = true },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = null
+                    )
+                }
             }
         }
 
@@ -584,6 +669,8 @@ fun InfoScreenPreview() {
             MenuItem(4, "imageUrl", "itemDescription", "itemName", 10.0, 0, "restaurantName")
         ),
         isFav = true,
+        searchText = "",
+        onValueChange = {},
         onInsertOrDelete = {},
         onNavigateBack = {},
         onNavigateToPaymentScreen = {

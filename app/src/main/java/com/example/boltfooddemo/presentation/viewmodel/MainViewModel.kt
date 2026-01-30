@@ -41,29 +41,32 @@ class MainViewModel(
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage = _errorMessage.asStateFlow()
 
-    private val _isLoading = MutableStateFlow<Boolean>(false)
+    private val _isLoading = MutableStateFlow(false)
     val isLoading = _isLoading.asStateFlow()
 
-    private val _phoneText = MutableStateFlow<String>("")
+    private val _phoneText = MutableStateFlow("")
     val phoneText = _phoneText.asStateFlow()
 
-    private val _selectedCountryCode = MutableStateFlow<String>("+93")
+    private val _selectedCountryCode = MutableStateFlow("+93")
     val selectedCountryCode = _selectedCountryCode.asStateFlow()
 
-    private val _searchCountryCodeText = MutableStateFlow<String>("")
+    private val _searchCountryCodeText = MutableStateFlow("")
     val searchCountryCodeText = _searchCountryCodeText.asStateFlow()
 
-    private val _passwordText = MutableStateFlow<String>("")
+    private val _passwordText = MutableStateFlow("")
     val passwordText = _passwordText.asStateFlow()
 
-    private val _nameText = MutableStateFlow<String>("")
+    private val _nameText = MutableStateFlow("")
     val nameText = _nameText.asStateFlow()
 
-    private val _surnameText = MutableStateFlow<String>("")
+    private val _surnameText = MutableStateFlow("")
     val surnameText = _surnameText.asStateFlow()
 
-    private val _emailText = MutableStateFlow<String>("")
+    private val _emailText = MutableStateFlow("")
     val emailText = _emailText.asStateFlow()
+
+    private val _searchText = MutableStateFlow("")
+    val searchText = _searchText.asStateFlow()
 
     fun updatePhoneText(text: String) {
         _phoneText.value = text
@@ -76,6 +79,11 @@ class MainViewModel(
     fun updateSearchCountryCodeText(text: String) {
         _searchCountryCodeText.value = text
     }
+
+    fun updateSearchText(text: String) {
+        _searchText.value = text
+    }
+
 
     fun updatePasswordText(text: String) {
         _passwordText.value = text
@@ -97,8 +105,7 @@ class MainViewModel(
         viewModelScope.launch {
             _isLoading.value = true
             _errorMessage.value = null
-            val resource = getAllRestaurantsUseCase.execute()
-            when (resource) {
+            when (val resource = getAllRestaurantsUseCase.execute()) {
                 is Resource.Success -> {
                     _restaurants.value = resource.data ?: emptyList()
                     Log.i("MY TAG", "getAllRestaurants: ${resource.data}")
@@ -116,8 +123,7 @@ class MainViewModel(
         viewModelScope.launch {
             _isLoading.value = true
             _errorMessage.value = null
-            val resource = getMenuUseCase.execute(id)
-            when (resource) {
+            when (val resource = getMenuUseCase.execute(id)) {
                 is Resource.Success -> {
                     _menu.value = resource.data ?: emptyList()
                     Log.i("MY TAG", "getMenu: ${resource.data}")
