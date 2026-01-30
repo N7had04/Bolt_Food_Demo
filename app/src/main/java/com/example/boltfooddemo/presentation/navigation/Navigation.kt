@@ -42,6 +42,7 @@ fun Navigation(
     val phoneText = mainViewModel.phoneText.collectAsState()
     val selectedCountryCode = mainViewModel.selectedCountryCode.collectAsState()
     val searchCountryCodeText = mainViewModel.searchCountryCodeText.collectAsState()
+    val searchText = mainViewModel.searchText.collectAsState()
     val passwordText = mainViewModel.passwordText.collectAsState()
     val nameText = mainViewModel.nameText.collectAsState()
     val surnameText = mainViewModel.surnameText.collectAsState()
@@ -234,6 +235,8 @@ fun Navigation(
                 restaurant = restaurant,
                 menu = menu.value,
                 isFav = favRestaurants.value.any { it.restaurantID == restaurant.restaurantID },
+                searchText = searchText.value,
+                onValueChange = { mainViewModel.updateSearchText(it) },
                 onInsertOrDelete = {
                     val favRestaurant = favRestaurants.value.firstOrNull { it.restaurantID == restaurant.restaurantID }
                     if (favRestaurant != null) {

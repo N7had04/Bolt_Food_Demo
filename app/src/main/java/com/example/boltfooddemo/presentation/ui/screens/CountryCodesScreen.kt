@@ -29,7 +29,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
@@ -96,7 +95,7 @@ fun CountryCodesScreen(
         ) {
             OutlinedTextField(
                 value = searchCountryCodeText,
-                onValueChange = {
+                onValueChange = { it ->
                     onValueChange(it)
                     codes = countryCodes.filter { it.name.contains(searchCountryCodeText, ignoreCase = true) } },
                 placeholder = { Text("Search") },
@@ -119,12 +118,9 @@ fun CountryCodesScreen(
                 keyboardActions = KeyboardActions(
                     onSearch = {
                         focusManager.clearFocus()
-                        isFocused = false
                     }
                 ),
-                modifier = Modifier.weight(searchCountryCodeTextFieldWeight).onFocusChanged(
-                    onFocusChanged = { state -> isFocused = state.isFocused }
-                ).animateContentSize(),
+                modifier = Modifier.weight(searchCountryCodeTextFieldWeight).animateContentSize(),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = Green217,
                     unfocusedBorderColor = Color.Transparent,
@@ -136,7 +132,6 @@ fun CountryCodesScreen(
             TextButton(
                 onClick = {
                     focusManager.clearFocus()
-                    isFocused = false
                 },
                 modifier = Modifier.weight(textButtonWeight).animateContentSize()
             ) {
