@@ -68,6 +68,9 @@ class MainViewModel(
     private val _searchText = MutableStateFlow("")
     val searchText = _searchText.asStateFlow()
 
+    private val _searchMenuText = MutableStateFlow("")
+    val searchMenuText = _searchMenuText.asStateFlow()
+
     fun updatePhoneText(text: String) {
         _phoneText.value = text
     }
@@ -84,6 +87,9 @@ class MainViewModel(
         _searchText.value = text
     }
 
+    fun updateSearchMenuText(text: String) {
+        _searchMenuText.value = text
+    }
 
     fun updatePasswordText(text: String) {
         _passwordText.value = text

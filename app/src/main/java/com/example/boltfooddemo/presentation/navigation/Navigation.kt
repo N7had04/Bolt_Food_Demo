@@ -43,6 +43,7 @@ fun Navigation(
     val selectedCountryCode = mainViewModel.selectedCountryCode.collectAsState()
     val searchCountryCodeText = mainViewModel.searchCountryCodeText.collectAsState()
     val searchText = mainViewModel.searchText.collectAsState()
+    val searchMenuText = mainViewModel.searchMenuText.collectAsState()
     val passwordText = mainViewModel.passwordText.collectAsState()
     val nameText = mainViewModel.nameText.collectAsState()
     val surnameText = mainViewModel.surnameText.collectAsState()
@@ -183,6 +184,8 @@ fun Navigation(
                         mainViewModel.saveFavRestaurant(restaurantToFavRestaurant(restaurant))
                     }
                 },
+                searchMenuText = searchMenuText.value,
+                onValueChange = { mainViewModel.updateSearchMenuText(it) },
                 onNavigateToAllScreen = { text -> navController.navigate(Screens.AllScreen.route + "/$text") },
                 onNavigateToInfoScreen = {
                     navController.currentBackStackEntry?.savedStateHandle?.set("restaurant", it)

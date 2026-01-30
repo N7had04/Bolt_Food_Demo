@@ -59,12 +59,18 @@ fun HomeScreen(
     isFav: (Restaurant) -> Boolean,
     onNavigateToAllScreen: (String) -> Unit,
     onNavigateToInfoScreen: (Restaurant) -> Unit,
+    onNavigateToSearchScreen: () -> Unit,
     onInsertOrDelete: (Restaurant) -> Unit
 ) {
     var isScrollingUp by remember { mutableStateOf(true) }
 
     Scaffold(
-        topBar = { HomeTopBar(isScrollingUp = isScrollingUp) },
+        topBar = {
+            HomeTopBar(
+                isScrollingUp = isScrollingUp,
+                onNavigateToSearchScreen = { onNavigateToSearchScreen()}
+            )
+        },
         modifier = modifier.fillMaxSize()
     ) { padding ->
 
@@ -245,6 +251,7 @@ fun HomeScreenPreview() {
         ),
         onNavigateToAllScreen = {},
         onNavigateToInfoScreen = {},
+        onNavigateToSearchScreen = {},
         onInsertOrDelete = {}
     )
 }
