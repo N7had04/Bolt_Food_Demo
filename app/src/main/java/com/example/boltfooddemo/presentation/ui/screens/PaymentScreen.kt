@@ -1,5 +1,6 @@
 package com.example.boltfooddemo.presentation.ui.screens
 
+import android.content.pm.ActivityInfo
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -38,6 +39,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.boltfooddemo.data.model.Restaurant
+import com.example.boltfooddemo.presentation.ui.components.LockScreenOrientation
 import com.example.boltfooddemo.presentation.ui.theme.Green217
 
 @Composable
@@ -48,6 +50,7 @@ fun PaymentScreen(
     saveOrder: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
     val showDialog = remember { mutableStateOf(false) }
     val selectedOption = remember { mutableStateOf("Delivery") }
 

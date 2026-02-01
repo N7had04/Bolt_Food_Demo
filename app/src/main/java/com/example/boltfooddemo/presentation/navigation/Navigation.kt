@@ -13,6 +13,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.boltfooddemo.R
 import com.example.boltfooddemo.data.model.Restaurant
+import com.example.boltfooddemo.data.model.User
 import com.example.boltfooddemo.data.utils.favRestaurantToRestaurant
 import com.example.boltfooddemo.data.utils.restaurantToFavRestaurant
 import com.example.boltfooddemo.presentation.ui.screens.AllScreen
@@ -173,10 +174,14 @@ fun Navigation(
                 mainViewModel.getAllRestaurants()
             }
             MainScreen(
-                isFav = {restaurant -> favRestaurants.value.any { it.restaurantID == restaurant.restaurantID }},
+                user = user.value ?: User(0, "", "", "", "", ""),
+                isFav = { restaurant -> favRestaurants.value.any { it.restaurantID == restaurant.restaurantID }},
                 pastOrders = pastOrders.value,
                 restaurants = restaurants.value,
-                onInsertOrDelete = {restaurant ->
+                favRestaurants = favRestaurants.value.map { restaurant ->
+                    favRestaurantToRestaurant(restaurant)
+                },
+                onInsertOrDelete = { restaurant ->
                     val favRestaurant = favRestaurants.value.firstOrNull { it.restaurantID == restaurant.restaurantID }
                     if (favRestaurant != null) {
                         mainViewModel.deleteFavRestaurant(favRestaurant)
@@ -190,6 +195,22 @@ fun Navigation(
                 onNavigateToInfoScreen = {
                     navController.currentBackStackEntry?.savedStateHandle?.set("restaurant", it)
                     navController.navigate(Screens.InfoScreen.route)
+                },
+                onLogout = {
+                    authViewModel.logout()
+                    navController.navigate(Screens.PhoneScreen.route) {
+                        popUpTo(Screens.MainScreen.route) {
+                            inclusive = true
+                        }
+                    }
+                },
+                onDeleteAccount = {
+                    authViewModel.deleteUser()
+                    navController.navigate(Screens.PhoneScreen.route) {
+                        popUpTo(Screens.MainScreen.route) {
+                            inclusive = true
+                        }
+                    }
                 }
             )
         }

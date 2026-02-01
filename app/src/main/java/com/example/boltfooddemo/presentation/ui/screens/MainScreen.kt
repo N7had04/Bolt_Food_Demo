@@ -11,20 +11,25 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.boltfooddemo.data.model.Restaurant
+import com.example.boltfooddemo.data.model.User
 import com.example.boltfooddemo.presentation.ui.components.BottomNavigationBar
 import com.example.boltfooddemo.presentation.utils.Screens
 
 @Composable
 fun MainScreen(
     modifier: Modifier = Modifier,
+    user: User,
     isFav: (Restaurant) -> Boolean,
     pastOrders: List<Restaurant>,
     restaurants: List<Restaurant>,
+    favRestaurants: List<Restaurant>,
     onInsertOrDelete: (Restaurant) -> Unit,
     searchMenuText: String,
     onValueChange: (String) -> Unit,
     onNavigateToAllScreen: (String) -> Unit,
-    onNavigateToInfoScreen: (Restaurant) -> Unit
+    onNavigateToInfoScreen: (Restaurant) -> Unit,
+    onLogout: () -> Unit,
+    onDeleteAccount: () -> Unit
 ) {
     val navController = rememberNavController()
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
@@ -78,7 +83,14 @@ fun MainScreen(
                 )
             }
             composable(Screens.AccountScreen.route) {
-                AccountScreen()
+                AccountScreen(
+                    user = user,
+                    favRestaurants = favRestaurants,
+                    onNavigateToInfoScreen = {onNavigateToInfoScreen(it)},
+                    onNavigateToAllScreen = {onNavigateToAllScreen(it)},
+                    onLogout = {onLogout()},
+                    onDeleteAccount = {onDeleteAccount()}
+                )
             }
         }
     }
@@ -88,13 +100,17 @@ fun MainScreen(
 @Composable
 fun MainScreenPreview() {
     MainScreen(
+        user = User(0, "", "", "", "", ""),
         isFav = {true},
         pastOrders = emptyList(),
         restaurants = emptyList(),
+        favRestaurants = emptyList(),
         onInsertOrDelete = {},
         searchMenuText = "",
         onValueChange = {},
         onNavigateToAllScreen = {},
-        onNavigateToInfoScreen = {}
+        onNavigateToInfoScreen = {},
+        onLogout = {},
+        onDeleteAccount = {}
     )
 }

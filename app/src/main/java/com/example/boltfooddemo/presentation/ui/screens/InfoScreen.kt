@@ -1,5 +1,6 @@
 package com.example.boltfooddemo.presentation.ui.screens
 
+import android.content.pm.ActivityInfo
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
@@ -81,6 +82,7 @@ import coil.compose.AsyncImage
 import com.example.boltfooddemo.R
 import com.example.boltfooddemo.data.model.MenuItem
 import com.example.boltfooddemo.data.model.Restaurant
+import com.example.boltfooddemo.presentation.ui.components.LockScreenOrientation
 import com.example.boltfooddemo.presentation.ui.theme.Green217
 import com.example.boltfooddemo.presentation.ui.theme.LightGray
 import kotlinx.coroutines.launch
@@ -99,6 +101,7 @@ fun InfoScreen(
     onNavigateBack: () -> Unit,
     onNavigateToPaymentScreen: (Restaurant, String) -> Unit
 ) {
+    LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true
     )
