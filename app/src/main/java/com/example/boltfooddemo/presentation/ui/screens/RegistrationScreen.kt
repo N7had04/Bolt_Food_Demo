@@ -1,5 +1,6 @@
 package com.example.boltfooddemo.presentation.ui.screens
 
+import android.content.pm.ActivityInfo
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,6 +28,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.boltfooddemo.presentation.ui.components.LockScreenOrientation
 import com.example.boltfooddemo.presentation.ui.theme.Green217
 import com.example.boltfooddemo.presentation.ui.theme.LightGray
 
@@ -42,6 +44,7 @@ fun RegistrationScreen(
     onNavigateBack: () -> Unit,
     onNavigateToMainScreen: () -> Unit
 ) {
+    LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
     Column(
         modifier = modifier.fillMaxSize().padding(16.dp),
         verticalArrangement = Arrangement.SpaceBetween

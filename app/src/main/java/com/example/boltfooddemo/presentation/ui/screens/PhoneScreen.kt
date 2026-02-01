@@ -1,6 +1,7 @@
 package com.example.boltfooddemo.presentation.ui.screens
 
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -41,6 +42,7 @@ import com.example.boltfooddemo.R
 import com.example.boltfooddemo.presentation.ui.theme.Green217
 import com.example.boltfooddemo.presentation.ui.theme.LightGray
 import androidx.core.net.toUri
+import com.example.boltfooddemo.presentation.ui.components.LockScreenOrientation
 
 @Composable
 fun PhoneScreen(
@@ -51,6 +53,7 @@ fun PhoneScreen(
     onNavigateToPasswordScreen: () -> Unit,
     onNavigateToCountryCodesScreen: () -> Unit
 ) {
+    LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
     val context = LocalContext.current
 
     Column(

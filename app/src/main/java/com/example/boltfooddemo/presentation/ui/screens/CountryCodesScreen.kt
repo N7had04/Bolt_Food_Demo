@@ -1,5 +1,6 @@
 package com.example.boltfooddemo.presentation.ui.screens
 
+import android.content.pm.ActivityInfo
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -39,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.boltfooddemo.data.model.CountryCode
 import com.example.boltfooddemo.presentation.ui.components.CountryCodesList
+import com.example.boltfooddemo.presentation.ui.components.LockScreenOrientation
 import com.example.boltfooddemo.presentation.ui.theme.Green217
 import com.example.boltfooddemo.presentation.ui.theme.LightGray
 
@@ -51,6 +53,7 @@ fun CountryCodesScreen(
     onNavigateBack: () -> Unit,
     onNavigateToPhoneScreen: (String) -> Unit
 ) {
+    LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
     var codes by rememberSaveable { mutableStateOf(countryCodes) }
     var isFocused by rememberSaveable { mutableStateOf(true) }
     val focusManager = LocalFocusManager.current

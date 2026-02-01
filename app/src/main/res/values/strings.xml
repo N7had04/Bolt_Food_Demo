@@ -3,4 +3,9 @@
     <string name="order_again">Order Again</string>
     <string name="all">All</string>
     <string name="explore_all_places">Explore all places</string>
+    <string name="favorite">Favourites</string>
+    <string name="profile">Profile</string>
+    <string name="edit">Edit</string>
+    <string name="logout">Log Out</string>
+    <string name="delete_account">Delete account</string>
 </resources>

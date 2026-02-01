@@ -1,5 +1,6 @@
 package com.example.boltfooddemo.presentation.ui.screens
 
+import android.content.pm.ActivityInfo
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -34,6 +35,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.boltfooddemo.presentation.ui.components.LockScreenOrientation
 import com.example.boltfooddemo.presentation.ui.theme.Green217
 import com.example.boltfooddemo.presentation.ui.theme.LightGray
 
@@ -46,6 +48,7 @@ fun PasswordScreen(
     onNavigateBack: () -> Unit,
     onNavigate: () -> Unit
 ) {
+    LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
     val text = if (isRegistration) "Set your password" else "Enter your password to login"
     val focusRequester = remember { FocusRequester() }
 

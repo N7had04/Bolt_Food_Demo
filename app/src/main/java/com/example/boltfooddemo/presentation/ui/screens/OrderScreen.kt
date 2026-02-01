@@ -1,5 +1,6 @@
 package com.example.boltfooddemo.presentation.ui.screens
 
+import android.content.pm.ActivityInfo
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -33,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.boltfooddemo.R
 import com.example.boltfooddemo.data.model.Restaurant
+import com.example.boltfooddemo.presentation.ui.components.LockScreenOrientation
 import com.example.boltfooddemo.presentation.ui.theme.LightGray
 
 @Composable
@@ -41,6 +43,7 @@ fun OrderScreen(
     onNavigateToInfoScreen: (Restaurant) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
     Box(
         modifier = modifier.fillMaxSize()
     ) {

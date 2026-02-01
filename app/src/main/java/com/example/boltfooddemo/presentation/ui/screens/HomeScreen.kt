@@ -1,5 +1,6 @@
 package com.example.boltfooddemo.presentation.ui.screens
 
+import android.content.pm.ActivityInfo
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -12,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -49,6 +49,7 @@ import androidx.compose.ui.unit.sp
 import com.example.boltfooddemo.R
 import com.example.boltfooddemo.data.model.Restaurant
 import com.example.boltfooddemo.presentation.ui.components.HomeTopBar
+import com.example.boltfooddemo.presentation.ui.components.LockScreenOrientation
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -62,6 +63,7 @@ fun HomeScreen(
     onNavigateToSearchScreen: () -> Unit,
     onInsertOrDelete: (Restaurant) -> Unit
 ) {
+    LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
     var isScrollingUp by remember { mutableStateOf(true) }
 
     Scaffold(
@@ -139,14 +141,14 @@ fun HomeScreen(
                         items(pastOrders) {
                             Column(
                                 verticalArrangement = Arrangement.Center,
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                modifier = Modifier.width(130.dp).clickable{ onNavigateToInfoScreen(it) }
+                                modifier = Modifier.width(200.dp).clickable{ onNavigateToInfoScreen(it) }
                             ) {
                                 Image(
                                     painter = painterResource(id = R.drawable.bolt_food),
                                     contentDescription = null,
                                     modifier = Modifier
-                                        .size(120.dp)
+                                        .height(150.dp)
+                                        .width(200.dp)
                                         .padding(bottom = 8.dp)
                                         .clip(RoundedCornerShape(12.dp)),
                                     contentScale = ContentScale.Crop
