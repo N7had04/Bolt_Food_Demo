@@ -1,3 +1,16 @@
+import java.util.Properties
+import kotlin.apply
+
+val localProperties = Properties().apply {
+    val file = rootProject.file("local.properties")
+    if (file.exists()) load(file.inputStream())
+}
+
+fun secret(key: String): String =
+    System.getenv(key)
+        ?: localProperties[key] as? String // local fallback
+        ?: error("Missing secret: $key")
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -9,16 +22,16 @@ plugins {
 
 android {
     namespace = "com.example.boltfooddemo"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.boltfooddemo"
         minSdk = 24
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField("String", "BASE_URL", "\"${property("MY_URL")}\"")
+        buildConfigField("String", "BASE_URL", "\"${secret("BASE_URL")}\"")
     }
 
     buildTypes {
